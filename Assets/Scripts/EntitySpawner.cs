@@ -20,6 +20,10 @@ public class EntitySpawner : MonoBehaviour
         manager = GetComponent<Manager>();
     }
 
+    public void JudgeMe(GameObject judgeWho){
+        judgeWho.GetComponent<MeshRenderer>().material.color = gradient.Evaluate(judgeWho.GetComponent<Stats>().charm/100);
+    }
+
     public void SpawnCharacter(Vector3 pos, string name){
         GameObject newCharacter = GameObject.Instantiate(characterPrefab,pos,Quaternion.identity,characterParent);
         newCharacter.name = name;
@@ -27,17 +31,23 @@ public class EntitySpawner : MonoBehaviour
         Stats stat = newCharacter.GetComponent<Stats>();
         stat.myName = name;
         CharacterStatGenerator(stat);
-        newCharacter.GetComponent<MeshRenderer>().material.color = gradient.Evaluate(stat.strength/100);
-        Debug.Log(stat.strength/100);
-
-        newCharacter.AddComponent<CharacterMove>();
+        newCharacter.GetComponent<MeshRenderer>().material.color = gradient.Evaluate(stat.charm/100);
         manager.statManager.AddCharacter(newCharacter);
     }
 
     void CharacterStatGenerator(Stats stats){
-        stats.age = Random.Range(18f,25f);
-        stats.strength = Random.Range(30f,100f);
-        stats.speed = Random.Range(20f,100f);
+        float totalStats = 100;
+        float brains = Random.Range(0,70f);
+        totalStats-=brains;
+        float speed = Random.Range(0,totalStats);
+        totalStats-=speed;
+
+        stats.brains = brains;
+        stats.speed = speed;
+        stats.charm = totalStats;
+        stats.age = 20;
+
+        //add the charm stuff here if you want more complexity
     }
 
     public void SpawnEnemy(Vector3 pos){

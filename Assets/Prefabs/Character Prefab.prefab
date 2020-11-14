@@ -108,6 +108,8 @@ GameObject:
   - component: {fileID: 4234840383278823966}
   - component: {fileID: 4234840383278823965}
   - component: {fileID: 4234840383278823964}
+  - component: {fileID: -7888876823491722961}
+  - component: {fileID: -7248520276617537950}
   m_Layer: 8
   m_Name: Character Prefab
   m_TagString: Untagged
@@ -206,11 +208,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myName: 
-  strength: 50
-  speed: 50
-  heal: 50
+  speed: 33
   age: 20
-  brains: 50
+  brains: 33
+  charm: 33
+--- !u!54 &-7888876823491722961
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4234840383278823955}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &-7248520276617537950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4234840383278823955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8e0af84d4238a1498f62f604901a45b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moving: 0
+  wooAble: 1
+  partyMember: 0
+  retired: 0
+  isPlayer: 0
 --- !u!1 &4234840383565413483
 GameObject:
   m_ObjectHideFlags: 0

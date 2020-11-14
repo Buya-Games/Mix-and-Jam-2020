@@ -10,23 +10,26 @@ public class MatingProcess : MonoBehaviour
         manager = FindObjectOfType<Manager>();
     }
 
-    public void Congratulations(GameObject faja, GameObject maja){
+    public void Congratulations(GameObject faja, GameObject maja, bool cpu){
         Stats fajaStats = faja.GetComponent<Stats>();
         Stats majaStats = maja.GetComponent<Stats>();
 
-        GameObject baby = GameObject.Instantiate(manager.spawner.characterPrefab, faja.transform.position,Quaternion.identity);
-        baby.layer = 9;
+        GameObject baby = GameObject.Instantiate(manager.spawner.characterPrefab, faja.transform.position + Vector3.back,Quaternion.identity);
+        baby.name = "computer baaaby " + cpu;
+        if (cpu){
+            baby.layer = 8;
+        } else {
+            baby.layer = 9;
+        }
         Stats babyStats = baby.GetComponent<Stats>();
-        babyStats = BabyStats(fajaStats,majaStats);
-        manager.move.SetNewTarget(baby.transform);
+        BabyStats(fajaStats,majaStats, babyStats);
+        manager.NewBaby(baby, cpu);
     }
 
-    Stats BabyStats(Stats faja, Stats maja)
-    {
-        Stats babyStats = new Stats();
+    void BabyStats(Stats faja, Stats maja, Stats babyStats){
         babyStats.speed = ((faja.speed + maja.speed) / 2 );
         babyStats.brains = ((faja.brains + maja.brains) / 2 );
-
-        return babyStats;
+        babyStats.charm = ((faja.charm + maja.charm) / 2 );
+        //Debug.Log("new baby! speed: " + babyStats.speed + ", brains: " + babyStats.brains + ", charm: " + babyStats.charm);
     }
 }
