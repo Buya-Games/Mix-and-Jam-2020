@@ -11313,8 +11313,8 @@ GameObject:
   - component: {fileID: 811120138}
   - component: {fileID: 811120137}
   - component: {fileID: 811120136}
-  - component: {fileID: 811120141}
   - component: {fileID: 811120142}
+  - component: {fileID: 811120141}
   m_Layer: 9
   m_Name: Initial Character
   m_TagString: Untagged
@@ -11334,7 +11334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 799b7c000fbe9034b89233e7d2187f63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myName: 
+  myName: Player
   speed: 33
   age: 20
   brains: 33
@@ -11426,18 +11426,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 811120135}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8e0af84d4238a1498f62f604901a45b, type: 3}
+  m_Script: {fileID: 11500000, guid: dab0d7011e9c81343ab14b1af42d1b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myDir: {x: 0, y: 0, z: 0}
-  myTarget: {x: 0, y: 0, z: 0}
   moving: 0
   wooAble: 0
+  partyMember: 0
   isPlayer: 1
-  dontMove: 0
-  attractionLM:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!54 &811120142
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -44,12 +44,12 @@ public class MatingProcess : MonoBehaviour
     }
 
     void BabyStats(Stats faja, Stats maja, Stats babyStats){
-        babyStats.speed = Mathf.Max(faja.speed, maja.speed) + Random.Range(-5,5);
-        babyStats.brains = Mathf.Max(faja.brains, maja.brains) + Random.Range(-5,5);
-        babyStats.charm = Mathf.Max(faja.charm, maja.charm) + Random.Range(-5,5);
-        // babyStats.speed = ((faja.speed + maja.speed) / 2 + Random.Range(-5,5));
-        // babyStats.brains = ((faja.brains + maja.brains) / 2  + Random.Range(-5,5));
-        // babyStats.charm = ((faja.charm + maja.charm) / 2  + Random.Range(-5,5));
+        // babyStats.speed = Mathf.Max(faja.speed, maja.speed) + Random.Range(-5,5);
+        // babyStats.brains = Mathf.Max(faja.brains, maja.brains) + Random.Range(-5,5);
+        // babyStats.charm = Mathf.Max(faja.charm, maja.charm) + Random.Range(-5,5);
+        babyStats.speed = ((faja.speed + maja.speed) / 2 + Random.Range(-5,5));
+        babyStats.brains = ((faja.brains + maja.brains) / 2  + Random.Range(-5,5));
+        babyStats.charm = ((faja.charm + maja.charm) / 2  + Random.Range(-5,5));
         babyStats.age = 20;
         //Debug.Log("new baby! speed: " + babyStats.speed + ", brains: " + babyStats.brains + ", charm: " + babyStats.charm);
     }

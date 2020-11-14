@@ -70,13 +70,13 @@ public class EntityStatManager : MonoBehaviour
         globalPopulation = allCharactersStats.Count;
     }
 
-    // public void AddPartyCharacter(GameObject newPartyMember, bool initial = false){
-    //     partyCharacterObjects.Add(newPartyMember);
-    //     partyCharacterStats.Add(newPartyMember.GetComponent<Stats>());
-    //     if (!initial){
-    //         newPartyMember.GetComponent<HumanLogic>().JoinParty();
-    //     }
-    // }
+    public void AddPartyCharacter(GameObject newPartyMember, bool initial = false){
+        partyCharacterObjects.Add(newPartyMember);
+        partyCharacterStats.Add(newPartyMember.GetComponent<Stats>());
+        if (!initial){
+            newPartyMember.GetComponent<CharacterMove>().JoinParty();
+        }
+    }
 
     // void TallyPartyStats(){
     //     float age = 0;

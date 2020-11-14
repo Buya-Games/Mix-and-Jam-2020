@@ -4,27 +4,28 @@ using UnityEngine;
 
 public class CharacterMove : MonoBehaviour
 {
-    float timeLimit, counter, mySpeed;
+    float timeLimit, counter, mySpeed, myDistance;
     float minWaitTime = 1;
     float maxWaitTime = 3;
     float minMoveTime = 2;
     float maxMoveTime = 10;
-    Vector3 myDir;
-    public bool moving, wooAble, partyMember, retired, isPlayer;
+    Vector3 myDir, myOffset;
+    public bool moving, wooAble, partyMember, isPlayer;
     Transform partyTarget;
 
     void Start(){
         mySpeed = GetComponent<Stats>().speed/10;
         StartCoroutine(NewDirection());
         wooAble = true;
+        
     }
 
     IEnumerator NewDirection(bool wait = true){
+        counter = 0;
+        timeLimit = Random.Range(minMoveTime,maxMoveTime);
         moving = false;
         myDir = new Vector3(Random.Range(-1,1f),0,Random.Range(-0.1f,1f));//bias toward moving UP on the Z toward the finish line
         transform.position = new Vector3(transform.position.x, 1.1f, transform.position.z); //to prevent them from bobbing above/below base level
-        counter = 0;
-        timeLimit = Random.Range(minMoveTime,maxMoveTime);
         if (wait){
             yield return new WaitForSeconds(Random.Range(minWaitTime,maxWaitTime));
         } else {
@@ -35,23 +36,32 @@ public class CharacterMove : MonoBehaviour
     void Update()
     {
         if (!isPlayer){
-            if (retired){
-                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + transform.forward * Mathf.Sin(Time.time * 3 * mySpeed));
-            } else if (partyMember && transform.position != myDir){
-                myDir = partyTarget.position - new Vector3(1,0,1);
+            counter+=Time.deltaTime;
+            if (partyMember){
+                if (counter>timeLimit){
+                    NewPartyPosition();
+                }
+                myDir = partyTarget.position + myOffset;
                 transform.position = Vector3.MoveTowards(transform.position, myDir, mySpeed * Time.deltaTime);
                 transform.position = transform.position + transform.up * Mathf.Sin(Time.time * 3 * mySpeed) * 0.015f;
             } else {
-                counter+=Time.deltaTime;
                 if (moving){
-                transform.position = transform.position + transform.up * Mathf.Sin(Time.time * 3 * mySpeed) * 0.015f;
-                transform.position += myDir * mySpeed * Time.deltaTime;
+                    transform.position = transform.position + transform.up * Mathf.Sin(Time.time * 3 * mySpeed) * 0.015f;
+                    transform.position += myDir * mySpeed * Time.deltaTime;
                 }
                 if (counter>timeLimit){
                     StartCoroutine(NewDirection());
                 }
             }
         }
+    }
+
+    void NewPartyPosition(){
+        counter = 0;
+        timeLimit = Random.Range(minMoveTime,maxMoveTime);
+        myDistance = Random.Range(2,5f);
+        myOffset = new Vector3(myDistance * (Random.Range(0,2)-1),0,myDistance * (Random.Range(0,2)-1));
+        
     }
 
     void OnTriggerEnter(Collider col){
@@ -82,9 +92,12 @@ public class CharacterMove : MonoBehaviour
         FindObjectOfType<Manager>().WooFail();
     }
 
-    // public void JoinParty(){
-    //     partyTarget = FindObjectOfType<PlayerMove>().selectedPartyMember;
-    //     gameObject.layer = 9;
-    //     partyMember = true;
-    // }
+    public void JoinParty(){
+        NewPartyPosition();
+        partyTarget = FindObjectOfType<PlayerMove>().player;
+        gameObject.layer = 9;
+        partyMember = true;
+        moving = false;
+        wooAble = false;
+    }
 }

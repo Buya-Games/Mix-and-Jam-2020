@@ -33,6 +33,8 @@ public class Manager : MonoBehaviour
         //NewBaby(initialPlayer.gameObject, false);
         move.SetNewTarget(initialPlayer);
         statManager.AddCharacter(initialPlayer.gameObject);
+        player = initialPlayer.gameObject;
+        playerStats = initialPlayer.GetComponent<Stats>();
         //statManager.AddPartyCharacter(initialPlayer.gameObject, true);
 
     }
@@ -66,6 +68,8 @@ public class Manager : MonoBehaviour
             ui.ShowResult("Baby Born!");
             //ByeMomByeDad(player,_wooTarget);
             matingProcess.Congratulations(player,_wooTarget,player.transform.position + (Vector3.forward * 2), false);
+            statManager.AddPartyCharacter(_wooTarget);
+
         } else {
             ui.ShowResult("Woo Failed!");
             WooFail();
@@ -104,7 +108,7 @@ public class Manager : MonoBehaviour
     }
 
     public void NewBabyCharacter(GameObject newBaby){
-
+        statManager.AddPartyCharacter(newBaby);
     }
 
     // public void NewBaby(GameObject newPlayer, bool cpu){
