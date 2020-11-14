@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EntitySpawner : MonoBehaviour
 {
-    [SerializeField] GameObject characterPrefab;
+    [SerializeField] public GameObject characterPrefab;
     [SerializeField] Transform characterParent;
     [SerializeField] GameObject enemyPrefab;
     [SerializeField] Transform enemyParent;
@@ -14,6 +14,7 @@ public class EntitySpawner : MonoBehaviour
     List<GameObject> allEnemies = new List<GameObject>();
     List<GameObject> allItems = new List<GameObject>();
     Manager manager;
+    [SerializeField] Gradient gradient;
 
     void Awake(){
         manager = GetComponent<Manager>();
@@ -22,8 +23,14 @@ public class EntitySpawner : MonoBehaviour
     public void SpawnCharacter(Vector3 pos, string name){
         GameObject newCharacter = GameObject.Instantiate(characterPrefab,pos,Quaternion.identity,characterParent);
         newCharacter.name = name;
+        newCharacter.layer = 8;
         Stats stat = newCharacter.GetComponent<Stats>();
+        stat.myName = name;
         CharacterStatGenerator(stat);
+        newCharacter.GetComponent<MeshRenderer>().material.color = gradient.Evaluate(stat.strength/100);
+        Debug.Log(stat.strength/100);
+
+        newCharacter.AddComponent<CharacterMove>();
         manager.statManager.AddCharacter(newCharacter);
     }
 

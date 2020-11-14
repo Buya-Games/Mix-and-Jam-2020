@@ -13,6 +13,9 @@ public class Manager : MonoBehaviour
     [HideInInspector] public bool gameStarted;
     [SerializeField] int totalCharacters;
     [SerializeField] Transform initialPlayer;
+    GameObject _wooTarget;
+    [HideInInspector] public bool wooing; //to avoid triggering more than one woo at a time
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -23,12 +26,38 @@ public class Manager : MonoBehaviour
 
         move.SetNewTarget(initialPlayer);
         statManager.AddCharacter(initialPlayer.gameObject);
-        statManager.AddPartyCharacter(initialPlayer.gameObject);
+        statManager.AddPartyCharacter(initialPlayer.gameObject, true);
 
         for (int i = 0;i<totalCharacters;i++){
-            spawner.SpawnCharacter(new Vector3(Random.Range(-100,100),0,Random.Range(-100,100)),"Character" + i);
+            spawner.SpawnCharacter(new Vector3(Random.Range(-100,100),1.1f,Random.Range(-100,100)),"Character" + i);
         }
         gameStarted = true;
+    }
+
+    public void BeginWoo(GameObject wooTarget){
+        wooing = true;
+        ui.DisplayWoo(wooTarget.GetComponent<Stats>());
+        _wooTarget = wooTarget;
+    }
+
+    public void Woo(){
+        int x = Random.Range(0,2);
+        if (x == 1){
+            statManager.WooSuccess(_wooTarget);
+            Debug.Log(_wooTarget.name + "wooed!");
+        } else {
+            WooFail();
+        }
+        ui.CloseWoo();
+        _wooTarget.GetComponent<CharacterMove>().StopAllCoroutines(); //stops the TalkToMe coroutine in CharacterMove
+        wooing = false;
+    }
+
+    public void WooFail(){
+        ui.CloseWoo();
+        _wooTarget.GetComponent<CharacterMove>().WooFail();
+        Debug.Log(_wooTarget.name + "failed!");
+        wooing = false;
     }
 
     public void CharacterDeath(GameObject deadChar){

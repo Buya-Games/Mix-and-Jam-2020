@@ -34,9 +34,12 @@ public class EntityStatManager : MonoBehaviour
 
     }
 
-    public void AddPartyCharacter(GameObject newPartyMember){
+    public void AddPartyCharacter(GameObject newPartyMember, bool initial = false){
         partyCharacterObjects.Add(newPartyMember);
         partyCharacterStats.Add(newPartyMember.GetComponent<Stats>());
+        if (!initial){
+            newPartyMember.GetComponent<CharacterMove>().JoinParty();
+        }
     }
 
     void TallyPartyStats(){
@@ -48,12 +51,10 @@ public class EntityStatManager : MonoBehaviour
         }
         manager.partyAge = age/partyCharacterStats.Count;
         manager.partyStrength = strength/partyCharacterStats.Count;
-
     }
 
+    public void WooSuccess(GameObject wooTarget){
+        AddPartyCharacter(wooTarget);
+    }
 
-
-    // void UpdateAgeApperance(){
-
-    // }
 }

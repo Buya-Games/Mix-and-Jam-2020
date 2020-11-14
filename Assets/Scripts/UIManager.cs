@@ -6,8 +6,10 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
 
-    [SerializeField] TMP_Text textPartyAge;
-    [SerializeField] TMP_Text textPartyStrength;
+    [SerializeField] TMP_Text textPartyAge, textPartyStrength;
+    [SerializeField] GameObject panelWoo, btnWoo;
+    [SerializeField] TMP_Text textWooName;
+
     Manager manager;
 
     void Start(){
@@ -27,5 +29,14 @@ public class UIManager : MonoBehaviour
         textPartyStrength.text = "Party Strength: " + manager.partyStrength.ToString("F0");
     }
 
-    
+    public void DisplayWoo(Stats wooTargetStats){
+        //btnWoo.onClick.AddListener(() => SelectRegion(myNumber, myAbrv, myFullname));//, newBtn.GetComponent<RectTransform>()));      
+        panelWoo.gameObject.SetActive(true);
+        textWooName.text = wooTargetStats.myName;
+    }
+
+    public void CloseWoo(){
+        panelWoo.gameObject.SetActive(false);
+    }
 }
+
