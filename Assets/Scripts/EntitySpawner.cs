@@ -10,14 +10,23 @@ public class EntitySpawner : MonoBehaviour
     [SerializeField] Transform enemyParent;
     [SerializeField] GameObject itemPrefab;
     [SerializeField] Transform itemParent;
-    List<GameObject> allCharacters = new List<GameObject>();
+    public Queue<GameObject> lifepoolQueue = new Queue<GameObject>();
     List<GameObject> allEnemies = new List<GameObject>();
-    List<GameObject> allItems = new List<GameObject>();
+    Queue<GameObject> allItems = new Queue<GameObject>();
     Manager manager;
     [SerializeField] Gradient gradient;
 
     void Awake(){
         manager = GetComponent<Manager>();
+        SpawnQueueReserve();
+    }
+
+    void SpawnQueueReserve(){ //just spawning 10 bodies to have some reserve for the queue at the start
+        for (int i = 0;i<20;i++){
+            GameObject newCharacter = GameObject.Instantiate(characterPrefab,Vector3.down * 2,Quaternion.identity,characterParent);
+            lifepoolQueue.Enqueue(newCharacter);
+            newCharacter.SetActive(false);
+        }
     }
 
     public void JudgeMe(GameObject judgeWho){
@@ -39,7 +48,7 @@ public class EntitySpawner : MonoBehaviour
         float totalStats = 100;
         float brains = Random.Range(0,70f);
         totalStats-=brains;
-        float speed = Random.Range(0,totalStats);
+        float speed = Random.Range(10,totalStats);
         totalStats-=speed;
 
         stats.brains = brains;
@@ -57,7 +66,11 @@ public class EntitySpawner : MonoBehaviour
 
     public void SpawnItem(Vector3 pos){
         GameObject newItem = GameObject.Instantiate(itemPrefab,pos,Quaternion.identity,itemParent);
-        allItems.Add(newItem);
+        allItems.Enqueue(newItem);
+    }
+
+    public void CircleOfLife(GameObject addToQueue){
+        lifepoolQueue.Enqueue(addToQueue);
     }
 
 }

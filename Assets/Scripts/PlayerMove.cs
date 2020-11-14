@@ -46,9 +46,9 @@ public class PlayerMove : MonoBehaviour
                 player.position += Vector3.right * Time.deltaTime * moveSpeed;
                 dir.x = 1;
             }
-            if (dir != Vector3.zero){
+            //if (dir != Vector3.zero){
                 player.position = player.position + transform.up * Mathf.Sin(Time.time * frequency * moveSpeed) * magnitude;
-            }
+            //}
         }
         if (mouse){
             if (Input.GetMouseButtonDown(0) && !manager.wooing){
@@ -87,11 +87,11 @@ public class PlayerMove : MonoBehaviour
         Stats newStats = target.GetComponent<Stats>();
         moveSpeed = newStats.speed/10;
         virtualCamera.m_Follow = target;
-        virtualCamera.m_Lens.OrthographicSize = newStats.brains/2;
+        virtualCamera.m_Lens.OrthographicSize = newStats.brains * .8f;
         var transposer = virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
-        Vector3 zoom = new Vector3(0, newStats.brains/2 , -newStats.brains/2);
+        Vector3 zoom = new Vector3(0, newStats.brains * .8f, -newStats.brains * .5f);
         transposer.m_FollowOffset = zoom;
-
+        target.position = new Vector3(target.position.x,1.6f,target.position.z);
     }
 
 }

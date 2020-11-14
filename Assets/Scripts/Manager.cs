@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class Manager : MonoBehaviour
 {
-    [HideInInspector] public float partyAge;
-    [HideInInspector] public float partyStrength;
     [HideInInspector] public EntitySpawner spawner;
     [HideInInspector] public UIManager ui;
     [HideInInspector] public EntityStatManager statManager;
     [HideInInspector] public PlayerMove move;
     [HideInInspector] public bool gameStarted;
-    [SerializeField] int totalCharacters;
+    [SerializeField] int totalCharacters, totalItems;
     [SerializeField] Transform initialPlayer;
     GameObject _wooTarget;
     [HideInInspector] public bool wooing; //to avoid triggering more than one woo at a time
@@ -38,7 +36,10 @@ public class Manager : MonoBehaviour
 
     void Start(){
         for (int i = 0;i<totalCharacters;i++){
-            spawner.SpawnCharacter(new Vector3(Random.Range(-800,800),1.1f,Random.Range(-10,10)),"Character" + i);
+            spawner.SpawnCharacter(new Vector3(Random.Range(-400,400),1.1f,Random.Range(-10,10)),i.ToString("F0"));
+        }
+        for (int i = 0;i<totalItems;i++){
+            spawner.SpawnItem(new Vector3(Random.Range(-400,400),1.1f,Random.Range(-10,50)));
         }
         gameStarted = true;
     }
@@ -56,7 +57,7 @@ public class Manager : MonoBehaviour
             //Debug.Log(_wooTarget.name + "wooed!" + " your charm:" + playerStats.charm + ", partner charm: " + _wooTarget.GetComponent<Stats>().charm);
             Destroy(player.GetComponent<Rigidbody>());
             ByeMomByeDad(player,_wooTarget);
-            matingProcess.Congratulations(player,_wooTarget,false);
+            matingProcess.Congratulations(player,_wooTarget,player.transform.position + (Vector3.forward * 2), false);
         } else {
             WooFail();
         }
@@ -73,7 +74,12 @@ public class Manager : MonoBehaviour
             float x = (woo1.GetComponent<Stats>().charm * Random.Range(0.8f,1.2f)) - woo2.GetComponent<Stats>().charm;
             if (x > 0){
                 ByeMomByeDad(woo1,woo2);
-                matingProcess.Congratulations(woo1,woo2,true);
+                int noKids = Random.Range(1,4);
+                int leftRight = 1;
+                for (int i = 0; i < noKids; i++){
+                    leftRight *= -1; // spawning kids to left/right to avoid them mating with each other
+                    matingProcess.Congratulations(woo1,woo2,woo2.transform.position + (Vector3.right * (i + 1) * 10 * leftRight),true);
+                }
             } else {
                 woo1Logic.WooFail();
                 woo2Logic.WooFail();
@@ -108,17 +114,19 @@ public class Manager : MonoBehaviour
     }
 
     void ByeMomByeDad(GameObject mom, GameObject dad){
+        mom.transform.position = dad.transform.position + (Vector3.right * 2);
         mom.layer = 10;
         dad.layer = 10;
         HumanLogic momMove = mom.GetComponent<HumanLogic>();
         HumanLogic dadMove = dad.GetComponent<HumanLogic>();
-        momMove.retired = true;
         momMove.isPlayer = false;
-        dadMove.retired = true;
+        momMove.dontMove = false;
         dadMove.isPlayer = false;
+        dadMove.dontMove = false;
         statManager.RemoveFromGlobalPool(mom);
         statManager.RemoveFromGlobalPool(dad);
-        
+        spawner.CircleOfLife(mom);
+        spawner.CircleOfLife(dad);
     }
 
     // public void CharacterDeath(GameObject deadChar){

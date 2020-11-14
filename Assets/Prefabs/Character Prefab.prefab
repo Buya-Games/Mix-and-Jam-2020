@@ -245,6 +245,9 @@ MonoBehaviour:
   partyMember: 0
   retired: 0
   isPlayer: 0
+  attractionLM:
+    serializedVersion: 2
+    m_Bits: 2304
 --- !u!1 &4234840383565413483
 GameObject:
   m_ObjectHideFlags: 0
