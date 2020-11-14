@@ -71,7 +71,7 @@ public class PlayerMove : MonoBehaviour
             } else if (hit.collider.gameObject.layer == 8){ // another character, move there and start talking
                 targetPos = hit.transform.position - new Vector3(1,0,1);
                 Debug.Log(hit.collider.gameObject.name);
-                hit.collider.gameObject.GetComponent<HumanLogic>().moving = false;
+                hit.collider.gameObject.GetComponent<CharacterMove>().moving = false;
             } else if (hit.collider.gameObject.layer == 9){ // a party member, freeze game and show their stats
 
             }

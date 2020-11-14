@@ -22,7 +22,7 @@ public class EntitySpawner : MonoBehaviour
     }
 
     void SpawnQueueReserve(){ //just spawning 10 bodies to have some reserve for the queue at the start
-        for (int i = 0;i<20;i++){
+        for (int i = 0;i<10;i++){
             GameObject newCharacter = GameObject.Instantiate(characterPrefab,Vector3.down * 2,Quaternion.identity,characterParent);
             lifepoolQueue.Enqueue(newCharacter);
             newCharacter.SetActive(false);
