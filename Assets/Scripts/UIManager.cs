@@ -9,7 +9,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] TMP_Text textAge, textSpeed, textBrains, textCharm, textGlobalSpeed, textGlobalBrains, textGlobalCharm, textGlobalPopulation, textResult;
     [SerializeField] GameObject panelTalking, btn1, btn2, btn3, btn4, face;
-    [SerializeField] TMP_Text textName, textTalking;
+    public TMP_Text textName, textTalking;
     [SerializeField] TMP_Text textPopUp;
     Queue<TMP_Text> popupTexts = new Queue<TMP_Text>();
 
@@ -28,6 +28,12 @@ public class UIManager : MonoBehaviour
         }
         
     }
+
+    public void StartSpeaking(bool start = true){
+        panelTalking.SetActive(start);
+
+    }
+
 
     void LoadPopUpTexts(){
         for (int i = 0;i<5;i++){

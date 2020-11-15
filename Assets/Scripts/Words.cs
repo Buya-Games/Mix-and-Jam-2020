@@ -1,27 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Words : MonoBehaviour
 {
-    string[] hey;
-    public float bye;
+    public string[] opening1;
+    public string[] opening1speakers;
+    public string[] crashedRover;
+    public string[] yell;
+    public string[] whatisthat;
+    public string[] thankYou;
+    public string[] hereWeAre;
+    public string[] gameover;
 
-    void Start(){
-        hey = new string[4];
-        hey[0] = "Good life";
-        hey[1] = "Great life";
-        hey[2] = "OK life";
-        hey[1] = "Shit life";
-    }
-    // public List<string> strongWords = new List<string> {
-    //     "hi",
-    //     "bye"
-    // };
+    // public void OpeningNames(string s){
+    //     opening1speakers = new string[opening1.Length];
+    //     for (int i = 0;i<opening1speakers.Length;i++){
+    //         opening1speakers[i] = s;
+    //     }
+    // }
 
-    // public List<string> speedWords = new List<string> {
-    //     "hi",
-    //     "bye"
-    // };
+    // public void OpeningNames(string s){
+    //     opening1speakers = new string[opening1.Length];
+    //     for (int i = 0;i<opening1speakers.Length;i++){
+    //         opening1speakers[i] = s;
+    //     }
+    // }
     
 }

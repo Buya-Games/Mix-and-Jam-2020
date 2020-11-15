@@ -19,6 +19,7 @@ public class Manager : MonoBehaviour
     MatingProcess matingProcess;
     [HideInInspector] public Particles particles;
     [HideInInspector] public float difficulty = 1;
+    public string playerName;
 
     // Start is called before the first frame update
     void Awake()
@@ -32,7 +33,7 @@ public class Manager : MonoBehaviour
         particles = GetComponent<Particles>();
 
         //NewBaby(initialPlayer.gameObject, false);
-        move.SetNewTarget(initialPlayer);
+        //move.SetNewTarget(initialPlayer);
         statManager.AddCharacter(initialPlayer.gameObject);
         player = initialPlayer.gameObject;
         playerStats = initialPlayer.GetComponent<Stats>();
@@ -60,30 +61,30 @@ public class Manager : MonoBehaviour
         
     }
 
-    public void BeginWoo(GameObject wooTarget){
-        wooing = true;
-        ui.DisplayWoo(wooTarget.GetComponent<Stats>());
-        _wooTarget = wooTarget;
-    }
+    // public void BeginWoo(GameObject wooTarget){
+    //     wooing = true;
+    //     ui.DisplayWoo(wooTarget.GetComponent<Stats>());
+    //     _wooTarget = wooTarget;
+    // }
 
-    public void Woo(){
-        float x = (playerStats.charm * Random.Range(1,1.2f)) - _wooTarget.GetComponent<Stats>().charm;
-        if (x > 0){
-            //statManager.WooSuccess(_wooTarget);
-            //Debug.Log(_wooTarget.name + "wooed!" + " your charm:" + playerStats.charm + ", partner charm: " + _wooTarget.GetComponent<Stats>().charm);
-            ui.ShowResult("Baby Born!");
-            //ByeMomByeDad(player,_wooTarget);
-            matingProcess.Congratulations(player,_wooTarget,player.transform.position + (Vector3.forward * 2), false);
-            statManager.AddPartyCharacter(_wooTarget);
+    // public void Woo(){
+    //     float x = (playerStats.charm * Random.Range(1,1.2f)) - _wooTarget.GetComponent<Stats>().charm;
+    //     if (x > 0){
+    //         //statManager.WooSuccess(_wooTarget);
+    //         //Debug.Log(_wooTarget.name + "wooed!" + " your charm:" + playerStats.charm + ", partner charm: " + _wooTarget.GetComponent<Stats>().charm);
+    //         ui.ShowResult("Baby Born!");
+    //         //ByeMomByeDad(player,_wooTarget);
+    //         matingProcess.Congratulations(player,_wooTarget,player.transform.position + (Vector3.forward * 2), false);
+    //         statManager.AddPartyCharacter(_wooTarget);
 
-        } else {
-            ui.ShowResult("Woo Failed!");
-            WooFail();
-        }
-        ui.CloseWoo();
-        _wooTarget.GetComponent<CharacterMove>().StopAllCoroutines(); //stops the TalkToMe coroutine in HumanLogic
-        wooing = false;
-    }
+    //     } else {
+    //         ui.ShowResult("Woo Failed!");
+    //         WooFail();
+    //     }
+    //     ui.CloseWoo();
+    //     _wooTarget.GetComponent<CharacterMove>().StopAllCoroutines(); //stops the TalkToMe coroutine in HumanLogic
+    //     wooing = false;
+    // }
 
     // public void WooCPU(GameObject woo1, GameObject woo2){
     //     HumanLogic woo1Logic = woo1.GetComponent<HumanLogic>();
@@ -106,12 +107,12 @@ public class Manager : MonoBehaviour
     //     }
     // }
 
-    public void WooFail(){
-        ui.CloseWoo();
-        _wooTarget.GetComponent<CharacterMove>().WooFail();
-        Debug.Log(_wooTarget.name + "failed!");
-        wooing = false;
-    }
+    // public void WooFail(){
+    //     ui.CloseWoo();
+    //     _wooTarget.GetComponent<CharacterMove>().WooFail();
+    //     Debug.Log(_wooTarget.name + "failed!");
+    //     wooing = false;
+    // }
 
     public void NewBabyCharacter(GameObject newBaby){
         statManager.AddPartyCharacter(newBaby);

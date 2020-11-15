@@ -29,6 +29,14 @@ public class EnemyLogic : MonoBehaviour
         patrolTarget = new Vector3(Random.Range(-1,1f),0,Random.Range(-1f,1f));
     }
 
+    public void OpeningSequence(Transform tgt){
+        SetStats(1);
+        chaseTimer = 100;
+        myTarget = tgt;
+        chase = true;
+        
+    }
+
     public void SetStats(float difficulty){
         float totalStats = 100 * difficulty;
         myStats.brains = Random.Range(0,70);
@@ -64,8 +72,12 @@ public class EnemyLogic : MonoBehaviour
             AttackTarget();
         }
         if (myStats.health <= 0){
-
+            Death();
         }
+    }
+
+    void Death(){
+        Debug.Log(name + " died");
     }
 
     void Patrol(){

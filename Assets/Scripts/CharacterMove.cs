@@ -4,20 +4,22 @@ using UnityEngine;
 
 public class CharacterMove : MonoBehaviour
 {
-    float timeLimit, counter, mySpeed, myDistance;
+    float timeLimit, counter, mySpeed, myDistance, attackCounter, attackTimer;
     float minWaitTime = 1;
     float maxWaitTime = 3;
     float minMoveTime = 2;
     float maxMoveTime = 10;
     Vector3 myDir, myOffset;
-    public bool moving, wooAble, partyMember, isPlayer;
-    Transform partyTarget;
+    public bool moving, wooAble, partyMember, isPlayer, attack;
+    Transform partyTarget, enemyTarget;
+    Stats myStats;
 
     void Start(){
-        mySpeed = GetComponent<Stats>().speed/10;
+        myStats = GetComponent<Stats>();
+        mySpeed = myStats.speed/10;
+        attackTimer = (100 - myStats.speed)/10;
         StartCoroutine(NewDirection());
         wooAble = true;
-        
     }
 
     IEnumerator NewDirection(bool wait = true){
@@ -45,15 +47,32 @@ public class CharacterMove : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, myDir, mySpeed * Time.deltaTime);
                 transform.position = transform.position + transform.up * Mathf.Sin(Time.time * 3 * mySpeed) * 0.015f;
             } else {
-                if (moving){
-                    transform.position = transform.position + transform.up * Mathf.Sin(Time.time * 3 * mySpeed) * 0.015f;
-                    transform.position += myDir * mySpeed * Time.deltaTime;
-                }
-                if (counter>timeLimit){
-                    StartCoroutine(NewDirection());
-                }
+                // if (moving){
+                //     transform.position = transform.position + transform.up * Mathf.Sin(Time.time * 3 * mySpeed) * 0.015f;
+                //     transform.position += myDir * mySpeed * Time.deltaTime;
+                // }
+                // if (counter>timeLimit){
+                //     StartCoroutine(NewDirection());
+                // }
             }
         }
+        if (enemyTarget != null){
+            if (Mathf.Abs(Vector3.Distance(transform.position, enemyTarget.position)) > 3){
+                enemyTarget = null;
+            } else {
+                attackCounter+=Time.deltaTime;
+            }
+            if (attackCounter > attackTimer){
+                Attack();
+            }
+        }
+        if (myStats.health <= 0){
+            Death();
+        }
+    }
+
+    void Death(){
+        Debug.Log(name + " died");
     }
 
     void NewPartyPosition(){
@@ -64,33 +83,44 @@ public class CharacterMove : MonoBehaviour
         
     }
 
-    void OnTriggerEnter(Collider col){
-        if (gameObject.layer == 8 && !FindObjectOfType<Manager>().wooing){
-            if (col.gameObject.layer == 9 && wooAble){
-                StopAllCoroutines();
-                StartCoroutine(WaitForResponse());
-                moving = false;
-                FindObjectOfType<Manager>().BeginWoo(this.gameObject);
-            } else if (!wooAble){
-                DontTalkToMe();
-            }
+    void OnCollisionEnter(Collision col){
+        // if (gameObject.layer == 8 && !FindObjectOfType<Manager>().wooing){
+        //     if (col.gameObject.layer == 9 && wooAble){
+        //         StopAllCoroutines();
+        //         StartCoroutine(WaitForResponse());
+        //         moving = false;
+        //         FindObjectOfType<Manager>().BeginWoo(this.gameObject);
+        //     } else if (!wooAble){
+        //         DontTalkToMe();
+        //     }
+        // }
+        if (col.gameObject.layer == 12){
+            enemyTarget = col.transform;
         }
     }
 
-    public void WooFail(){
-        StopAllCoroutines();
-        wooAble = false;
-        StartCoroutine(NewDirection(false));
+    void Attack(){
+        float rando = Random.Range(.8f,1.2f);
+        bool critical = (rando >= 1.1f);
+        float hitPoint = myStats.strength/10 * rando;
+        enemyTarget.GetComponent<Stats>().health -= hitPoint;
+        FindObjectOfType<UIManager>().HitGUI(enemyTarget.position, hitPoint, critical);
     }
 
-    void DontTalkToMe(){
-        Debug.Log("don't talk to me!");
-    }
+    // public void WooFail(){
+    //     StopAllCoroutines();
+    //     wooAble = false;
+    //     StartCoroutine(NewDirection(false));
+    // }
 
-    IEnumerator WaitForResponse(){ //player has 5 seconds to successfully woo this character
-        yield return new WaitForSeconds(5);
-        FindObjectOfType<Manager>().WooFail();
-    }
+    // void DontTalkToMe(){
+    //     Debug.Log("don't talk to me!");
+    // }
+
+    // IEnumerator WaitForResponse(){ //player has 5 seconds to successfully woo this character
+    //     yield return new WaitForSeconds(5);
+    //     FindObjectOfType<Manager>().WooFail();
+    // }
 
     public void JoinParty(){
         NewPartyPosition();

@@ -41,18 +41,16 @@ public class FaceGenerator : MonoBehaviour
         mouthNo = mouth.Length;
     }
 
-    void Update(){
-        if (Input.GetMouseButtonDown(1)){
-            GenerateFace(
-                Random.Range(0,browsNo),
-                Random.Range(0,eyesNo),
-                Random.Range(0,nosesNo),
-                Random.Range(0,mouthNo),
-                Random.Range(0,hairNo),
-                Random.Range(0,1f),
-                Random.Range(0,1f)
-            );
-        }
+    public void RandomFace(){
+        GenerateFace(
+            Random.Range(0,browsNo),
+            Random.Range(0,eyesNo),
+            Random.Range(0,nosesNo),
+            Random.Range(0,mouthNo),
+            Random.Range(0,hairNo),
+            Random.Range(0,1f),
+            Random.Range(0,1f)
+        );
     }
 
     public void GenerateFace(int browsIndex, int eyesIndex, int noseIndex, int mouthIndex, int hairIndex, float hairColor, float faceColor){
