@@ -7,8 +7,8 @@ public class UIManager : MonoBehaviour
 {
 
     [SerializeField] TMP_Text textAge, textSpeed, textBrains, textCharm, textGlobalSpeed, textGlobalBrains, textGlobalCharm, textGlobalPopulation, textResult;
-    [SerializeField] GameObject panelWoo, btnWoo;
-    [SerializeField] TMP_Text textWooName;
+    [SerializeField] GameObject panelTalking, btn1, btn2, btn3, btn4, face;
+    [SerializeField] TMP_Text textName, textTalking;
 
     Manager manager;
 
@@ -55,12 +55,12 @@ public class UIManager : MonoBehaviour
 
     public void DisplayWoo(Stats wooTargetStats){
         //btnWoo.onClick.AddListener(() => SelectRegion(myNumber, myAbrv, myFullname));//, newBtn.GetComponent<RectTransform>()));      
-        panelWoo.gameObject.SetActive(true);
-        textWooName.text = wooTargetStats.myName;
+        panelTalking.gameObject.SetActive(true);
+        textName.text = wooTargetStats.myName;
     }
 
     public void CloseWoo(){
-        panelWoo.gameObject.SetActive(false);
+        panelTalking.gameObject.SetActive(false);
     }
 }
 
