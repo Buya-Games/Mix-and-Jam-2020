@@ -6,5 +6,8 @@ public class Stats : MonoBehaviour
     public float age;
     public float brains;
     public float charm;
+    public float strength;
+    public float heal;
+    public float health;
 
 }

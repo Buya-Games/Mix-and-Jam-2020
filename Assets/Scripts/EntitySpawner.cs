@@ -11,7 +11,7 @@ public class EntitySpawner : MonoBehaviour
     [SerializeField] GameObject itemPrefab;
     [SerializeField] Transform itemParent;
     public Queue<GameObject> lifepoolQueue = new Queue<GameObject>();
-    List<GameObject> allEnemies = new List<GameObject>();
+    Queue<GameObject> allEnemies = new Queue<GameObject>();
     Queue<GameObject> allItems = new Queue<GameObject>();
     Manager manager;
     [SerializeField] Gradient gradient;
@@ -23,10 +23,28 @@ public class EntitySpawner : MonoBehaviour
 
     void SpawnQueueReserve(){ //just spawning 10 bodies to have some reserve for the queue at the start
         for (int i = 0;i<10;i++){
-            GameObject newCharacter = GameObject.Instantiate(characterPrefab,Vector3.down * 2,Quaternion.identity,characterParent);
+            GameObject newCharacter = GameObject.Instantiate(characterPrefab,Vector3.down * 2,Quaternion.identity);
             lifepoolQueue.Enqueue(newCharacter);
             newCharacter.SetActive(false);
         }
+    }
+
+    void QueueEnemies(){
+        for (int i = 0;i<10;i++){
+            GameObject newEnemy = SpawnEnemy(Vector3.zero);//GameObject.Instantiate(enemyPrefab,pos,Quaternion.identity,enemyParent);
+            allEnemies.Enqueue(newEnemy);
+            newEnemy.SetActive(false);
+        }
+    }
+
+    public GameObject SpawnEnemy(Vector3 pos){
+        GameObject newEnemy = GameObject.Instantiate(enemyPrefab,pos,Quaternion.identity);
+        return newEnemy;
+    }
+
+    public void KillEnemy(GameObject enemy){
+        allEnemies.Enqueue(enemy);
+        enemy.SetActive(false);
     }
 
     public void JudgeMe(GameObject judgeWho){
@@ -34,7 +52,7 @@ public class EntitySpawner : MonoBehaviour
     }
 
     public void SpawnCharacter(Vector3 pos, string name){
-        GameObject newCharacter = GameObject.Instantiate(characterPrefab,pos,Quaternion.identity,characterParent);
+        GameObject newCharacter = GameObject.Instantiate(characterPrefab,pos,Quaternion.identity);
         newCharacter.name = name;
         newCharacter.layer = 8;
         Stats stat = newCharacter.GetComponent<Stats>();
@@ -59,13 +77,8 @@ public class EntitySpawner : MonoBehaviour
         //add the charm stuff here if you want more complexity
     }
 
-    public void SpawnEnemy(Vector3 pos){
-        GameObject newEnemy = GameObject.Instantiate(enemyPrefab,pos,Quaternion.identity,enemyParent);
-        allEnemies.Add(newEnemy);
-    }
-
     public void SpawnItem(Vector3 pos){
-        GameObject newItem = GameObject.Instantiate(itemPrefab,pos,Quaternion.identity,itemParent);
+        GameObject newItem = GameObject.Instantiate(itemPrefab,pos,Quaternion.identity);
         allItems.Enqueue(newItem);
     }
 

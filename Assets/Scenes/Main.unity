@@ -5304,8 +5304,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Hello Dear!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
-  m_sharedMaterial: {fileID: -1739296669280692821, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 313284322300d1a4c8bd641cc3ddf315, type: 2}
+  m_sharedMaterial: {fileID: -3796000464795136688, guid: 313284322300d1a4c8bd641cc3ddf315, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5438,8 +5438,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Choice
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
-  m_sharedMaterial: {fileID: -1739296669280692821, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5718,6 +5718,7 @@ MonoBehaviour:
   face: {fileID: 1398065155}
   textName: {fileID: 2033822998}
   textTalking: {fileID: 296520556}
+  textPopUp: {fileID: 8404749468046568464, guid: 3c82787740c83a741aee93a58c881248, type: 3}
 --- !u!114 &384810769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5732,7 +5733,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterPrefab: {fileID: 4234840383278823955, guid: 1e4b701908f307c4ebefbd68ba8bf446, type: 3}
   characterParent: {fileID: 1893471652}
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 8084963109724185631, guid: 1b7950ee31b1879449fe196a42b1aac4, type: 3}
   enemyParent: {fileID: 412097263}
   itemPrefab: {fileID: 5215654315212642865, guid: 767d6e8e2fb6a2d4e8b983b1ff2557e1, type: 3}
   itemParent: {fileID: 540199268}
@@ -5809,11 +5810,13 @@ MonoBehaviour:
   gameStarted: 0
   totalCharacters: 0
   totalItems: 0
+  totalEnemy: 50
   initialPlayer: {fileID: 811120140}
   wooing: 0
   player: {fileID: 0}
   playerStats: {fileID: 0}
   particles: {fileID: 0}
+  difficulty: 1
 --- !u!4 &384810772
 Transform:
   m_ObjectHideFlags: 0
@@ -10893,7 +10896,7 @@ GameObject:
   - component: {fileID: 606038345}
   - component: {fileID: 606038344}
   - component: {fileID: 606038343}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11217,8 +11220,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Speed:\t"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 313284322300d1a4c8bd641cc3ddf315, type: 2}
+  m_sharedMaterial: {fileID: -3796000464795136688, guid: 313284322300d1a4c8bd641cc3ddf315, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11599,6 +11602,9 @@ MonoBehaviour:
   age: 20
   brains: 33
   charm: 33
+  strength: 0
+  heal: 0
+  health: 0
 --- !u!65 &811120137
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11768,8 +11774,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Choice
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
-  m_sharedMaterial: {fileID: -1739296669280692821, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11928,7 +11934,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &998479173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12361,7 +12367,7 @@ GameObject:
   - component: {fileID: 1131262080}
   - component: {fileID: 1131262082}
   - component: {fileID: 1131262081}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Dust Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17537,8 +17543,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Choice
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
-  m_sharedMaterial: {fileID: -1739296669280692821, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -18213,7 +18219,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_RenderPostProcessing: 1
-  m_Antialiasing: 1
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 1
   m_Dithering: 0
@@ -18598,8 +18604,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Choice
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
-  m_sharedMaterial: {fileID: -1739296669280692821, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -18875,8 +18881,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Big Baby
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
-  m_sharedMaterial: {fileID: -1739296669280692821, guid: 9b131835acd41e547b988e9a916ab831, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 313284322300d1a4c8bd641cc3ddf315, type: 2}
+  m_sharedMaterial: {fileID: -3796000464795136688, guid: 313284322300d1a4c8bd641cc3ddf315, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -19018,7 +19024,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2113358372
 RectTransform:
   m_ObjectHideFlags: 0

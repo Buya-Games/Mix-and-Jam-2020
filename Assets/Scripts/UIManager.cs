@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,11 +10,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] TMP_Text textAge, textSpeed, textBrains, textCharm, textGlobalSpeed, textGlobalBrains, textGlobalCharm, textGlobalPopulation, textResult;
     [SerializeField] GameObject panelTalking, btn1, btn2, btn3, btn4, face;
     [SerializeField] TMP_Text textName, textTalking;
+    [SerializeField] TMP_Text textPopUp;
+    Queue<TMP_Text> popupTexts = new Queue<TMP_Text>();
 
     Manager manager;
 
     void Start(){
         manager = GetComponent<Manager>();
+        LoadPopUpTexts();
     }
 
 
@@ -23,6 +27,15 @@ public class UIManager : MonoBehaviour
             UpdateGlobalStatsGUI();
         }
         
+    }
+
+    void LoadPopUpTexts(){
+        for (int i = 0;i<5;i++){
+            GameObject newPopup = Instantiate(textPopUp.gameObject,textPopUp.transform.position,textPopUp.transform.rotation,textPopUp.transform.parent);
+            popupTexts.Enqueue(newPopup.GetComponent<TMP_Text>());
+            newPopup.SetActive(false);
+        }
+        popupTexts.Enqueue(textPopUp);//you get in there too dad!
     }
 
     void UpdateMainGUI(){
@@ -61,6 +74,27 @@ public class UIManager : MonoBehaviour
 
     public void CloseWoo(){
         panelTalking.gameObject.SetActive(false);
+    }
+
+    public void HitGUI(Vector3 pos, float amount, bool critical = false){
+        DisplayPopup(pos,"-" + amount.ToString("F0"));
+    }
+
+    void DisplayPopup(Vector3 where, string what){
+        if (popupTexts.Count > 0){
+            //where.y -=25;
+            TMP_Text popup = popupTexts.Dequeue();
+            Vector3 origSize = popup.transform.localScale;
+            popup.transform.localScale = Vector3.zero;
+            popup.text = what;
+            popup.transform.position = where + new Vector3(Random.Range(-1f,1f),0,Random.Range(-1f,1f));
+            popup.gameObject.SetActive(true);
+            popup.transform.DOScale(origSize,0.1f).OnComplete(() => {
+                popup.transform.DOPunchScale(origSize*1.2f,0.3f,5,0.2f);
+                popup.transform.DOMoveY(where.y+10,3).OnComplete(() => popup.gameObject.SetActive(false));
+                popupTexts.Enqueue(popup);
+            });
+        }
     }
 }
 

@@ -10,7 +10,7 @@ public class Manager : MonoBehaviour
     [HideInInspector] public EntityStatManager statManager;
     [HideInInspector] public PlayerMove move;
     [HideInInspector] public bool gameStarted;
-    [SerializeField] int totalCharacters, totalItems;
+    [SerializeField] int totalCharacters, totalItems, totalEnemy;
     [SerializeField] Transform initialPlayer;
     GameObject _wooTarget;
     [HideInInspector] public bool wooing; //to avoid triggering more than one woo at a time
@@ -18,6 +18,7 @@ public class Manager : MonoBehaviour
     [HideInInspector] public Stats playerStats;
     MatingProcess matingProcess;
     [HideInInspector] public Particles particles;
+    [HideInInspector] public float difficulty = 1;
 
     // Start is called before the first frame update
     void Awake()
@@ -45,6 +46,11 @@ public class Manager : MonoBehaviour
         }
         for (int i = 0;i<totalItems;i++){
             spawner.SpawnItem(new Vector3(Random.Range(-100,100),1.1f,Random.Range(-10,50)));
+        }
+        for (int i = 0;i<totalEnemy;i++){
+            Vector3 where = new Vector3(Random.Range(-100,100),1.1f,Random.Range(-10,50));
+            GameObject newEnemy = spawner.SpawnEnemy(where);
+            newEnemy.GetComponent<EnemyLogic>().PlaceEnemy(where);
         }
         gameStarted = true;
         Vector3 origScale = initialPlayer.transform.localScale;
