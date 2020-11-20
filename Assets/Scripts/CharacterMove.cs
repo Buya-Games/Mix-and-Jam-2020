@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CharacterMove : MonoBehaviour
 {
+    Manager manager;
     float timeLimit, counter, mySpeed, myDistance, attackCounter, attackTimer;
     float minWaitTime = 1;
     float maxWaitTime = 3;
@@ -11,15 +12,19 @@ public class CharacterMove : MonoBehaviour
     float maxMoveTime = 10;
     Vector3 myDir, myOffset;
     public bool moving, wooAble, partyMember, isPlayer, attack;
-    Transform partyTarget, enemyTarget;
+    public Transform partyTarget;
+    Transform enemyTarget;
     Stats myStats;
+    Animator anim;
 
     void Start(){
+        manager = FindObjectOfType<Manager>();
         myStats = GetComponent<Stats>();
         mySpeed = myStats.speed/10;
-        attackTimer = (100 - myStats.speed)/10;
+        attackTimer = (100 - myStats.speed)/20;
         StartCoroutine(NewDirection());
         wooAble = true;
+        anim = GetComponent<Animator>();
     }
 
     IEnumerator NewDirection(bool wait = true){
@@ -57,12 +62,13 @@ public class CharacterMove : MonoBehaviour
             }
         }
         if (enemyTarget != null){
-            if (Mathf.Abs(Vector3.Distance(transform.position, enemyTarget.position)) > 3){
+            if (Mathf.Abs(Vector3.Distance(transform.position, enemyTarget.position)) > 4){
                 enemyTarget = null;
             } else {
                 attackCounter+=Time.deltaTime;
             }
             if (attackCounter > attackTimer){
+                attackCounter = 0;
                 Attack();
             }
         }
@@ -104,7 +110,20 @@ public class CharacterMove : MonoBehaviour
         bool critical = (rando >= 1.1f);
         float hitPoint = myStats.strength/10 * rando;
         enemyTarget.GetComponent<Stats>().health -= hitPoint;
-        FindObjectOfType<UIManager>().HitGUI(enemyTarget.position, hitPoint, critical);
+        FindObjectOfType<UIManager>().HitGUI(enemyTarget.position, hitPoint, Color.green, critical);
+        manager.particles.EnemyHit(enemyTarget.position);
+        StartCoroutine(FlashRed(enemyTarget.gameObject));
+
+        Vector3 dir = (enemyTarget.position - transform.position).normalized;
+        dir.y = 0;
+        enemyTarget.GetComponent<Rigidbody>().velocity = (dir * manager.hitForce);
+    }
+    IEnumerator FlashRed(GameObject who){
+        MeshRenderer rendy = who.GetComponentInChildren<MeshRenderer>();
+        Color origColor = rendy.material.color;
+        rendy.material.color = Color.red;
+        yield return new WaitForSeconds(0.2f);
+        rendy.material.color = origColor;
     }
 
     // public void WooFail(){

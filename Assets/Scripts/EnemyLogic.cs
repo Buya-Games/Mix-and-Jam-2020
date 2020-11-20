@@ -10,6 +10,7 @@ public class EnemyLogic : MonoBehaviour
     float mySpeed, myStrength;
     [HideInInspector] public bool patrol, chase, attack;
     float attackTimer, chaseTimer, patrolTimer, counter;
+    [SerializeField] float attackDistance, distToTarget;
     Stats myStats;
     EnemyFOV myFOV;
     // Start is called before the first frame update
@@ -18,43 +19,6 @@ public class EnemyLogic : MonoBehaviour
         manager = FindObjectOfType<Manager>();
         myStats = GetComponent<Stats>();
         myFOV = GetComponentInChildren<EnemyFOV>();
-    }
-
-    public void PlaceEnemy(Vector3 where){
-        transform.position = where;
-
-        SetStats(manager.difficulty);
-        patrol = true;
-        myFOV.patrol = true;
-        patrolTarget = new Vector3(Random.Range(-1,1f),0,Random.Range(-1f,1f));
-    }
-
-    public void OpeningSequence(Transform tgt){
-        SetStats(1);
-        chaseTimer = 100;
-        myTarget = tgt;
-        chase = true;
-        
-    }
-
-    public void SetStats(float difficulty){
-        float totalStats = 100 * difficulty;
-        myStats.brains = Random.Range(0,70);
-        totalStats-=myStats.brains;
-        myStats.speed = Random.Range(10,totalStats);
-        totalStats-=myStats.speed;
-        myStats.strength = Random.Range(10,totalStats);
-
-        mySpeed = myStats.speed/10;
-        myStrength = myStats.strength/10;
-
-        patrolTimer = (100 - myStats.speed)/5;
-        attackTimer = (100 - myStats.speed)/10;
-        chaseTimer = (myStats.brains)/8;
-        float mySize = Mathf.Clamp(myStrength/2,0.1f,10);
-        transform.localScale = new Vector3(mySize,mySize*2,mySize);
-        myStats.health = 100 * difficulty * mySize;
-        myFOV.SetFOV(myStats.brains);
     }
 
     // Update is called once per frame
@@ -78,6 +42,53 @@ public class EnemyLogic : MonoBehaviour
 
     void Death(){
         Debug.Log(name + " died");
+        manager.spawner.RecyleEnemy(this.gameObject);
+    }
+
+    public void PlaceEnemy(Vector3 where){
+        transform.position = where;
+
+        SetStats(manager.difficulty);
+        patrol = true;
+        myFOV.patrol = true;
+        patrolTarget = new Vector3(Random.Range(-1,1f),0,Random.Range(-1f,1f));
+    }
+
+    public void OpeningSequence(Transform tgt){
+        SetStats(1);
+        chaseTimer = 100;
+        myTarget = tgt;
+        chase = true;
+        
+    }
+
+    IEnumerator FlashRed(GameObject who){
+        MeshRenderer rendy = who.GetComponentInChildren<MeshRenderer>();
+        Color origColor = rendy.material.color;
+        rendy.material.color = Color.red;
+        yield return new WaitForSeconds(0.2f);
+        rendy.material.color = origColor;
+    }
+
+    public void SetStats(float difficulty){
+        float totalStats = 100 * difficulty;
+        myStats.brains = Random.Range(0,70);
+        totalStats-=myStats.brains;
+        myStats.speed = Random.Range(10,totalStats);
+        totalStats-=myStats.speed;
+        myStats.strength = Random.Range(10,totalStats);
+
+        mySpeed = myStats.speed/10;
+        myStrength = myStats.strength/10;
+
+        patrolTimer = (100 - myStats.speed)/5;
+        attackTimer = (100 - myStats.speed)/20;
+        chaseTimer = (myStats.brains)/8;
+        float mySize = Mathf.Clamp(myStrength/2,0.1f,10);
+        transform.localScale = new Vector3(mySize,mySize*2,mySize);
+        attackDistance = mySize * 2;
+        myStats.health = 100 * difficulty * mySize;
+        myFOV.SetFOV(myStats.brains);
     }
 
     void Patrol(){
@@ -91,7 +102,8 @@ public class EnemyLogic : MonoBehaviour
     
     void ChaseTarget(){
         float dist = Mathf.Abs(Vector3.Distance(transform.position, myTarget.position));
-        if (dist < 2){
+        distToTarget = dist;
+        if (dist < attackDistance){
             ChangeState(false,false,true);
         } else {
             transform.position = Vector3.MoveTowards(transform.position, myTarget.position, mySpeed * Time.deltaTime);
@@ -103,7 +115,7 @@ public class EnemyLogic : MonoBehaviour
     }
 
     void AttackTarget(){
-        if (Mathf.Abs(Vector3.Distance(transform.position, myTarget.position)) > 3){
+        if (Mathf.Abs(Vector3.Distance(transform.position, myTarget.position)) > (attackDistance + 1)){
             ChangeState(false,true,false);
         } else {
             counter+=Time.deltaTime;
@@ -119,7 +131,12 @@ public class EnemyLogic : MonoBehaviour
         bool critical = (rando >= 1.1f);
         float hitPoint = myStrength * rando;
         myTarget.GetComponent<Stats>().health -= hitPoint;
-        manager.ui.HitGUI(myTarget.position, hitPoint, critical);
+        manager.ui.HitGUI(myTarget.position, hitPoint, Color.red, critical);
+        manager.particles.FriendlyHit(myTarget.position);
+        StartCoroutine(FlashRed(myTarget.gameObject));
+        Vector3 dir = (myTarget.position - transform.position).normalized;
+        dir.y = 0;
+        myTarget.GetComponent<Rigidbody>().velocity = (dir * manager.hitForce);
     }
 
     public void ChangeState(bool p, bool c, bool a){

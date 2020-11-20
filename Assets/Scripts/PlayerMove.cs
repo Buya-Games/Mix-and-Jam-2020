@@ -13,7 +13,8 @@ public class PlayerMove : MonoBehaviour
     Vector3 targetPos = new Vector3(0,1.6f,0);
     [SerializeField] LayerMask clickableLM;
     [SerializeField] bool keyboard, mouse;
-    [HideInInspector] public bool cutscene, gameLive;
+    [HideInInspector] public bool cutscene;
+    public bool gameLive;
     Manager manager;
     Vector3 myBounds;
     [SerializeField] CinemachineVirtualCamera virtualCamera;

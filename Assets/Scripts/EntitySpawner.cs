@@ -29,13 +29,18 @@ public class EntitySpawner : MonoBehaviour
         }
     }
 
-    void QueueEnemies(){
-        for (int i = 0;i<10;i++){
-            GameObject newEnemy = SpawnEnemy(Vector3.zero);//GameObject.Instantiate(enemyPrefab,pos,Quaternion.identity,enemyParent);
-            allEnemies.Enqueue(newEnemy);
-            newEnemy.SetActive(false);
-        }
+    public void RecyleEnemy(GameObject enemy){
+        allEnemies.Enqueue(enemy);
+        enemy.SetActive(false);
     }
+
+    // void QueueEnemies(GameObject){
+    //     for (int i = 0;i<10;i++){
+    //         GameObject newEnemy = SpawnEnemy(Vector3.zero);//GameObject.Instantiate(enemyPrefab,pos,Quaternion.identity,enemyParent);
+    //         allEnemies.Enqueue(newEnemy);
+    //         newEnemy.SetActive(false);
+    //     }
+    // }
 
     public GameObject SpawnEnemy(Vector3 pos){
         GameObject newEnemy = GameObject.Instantiate(enemyPrefab,pos,Quaternion.identity);
@@ -53,11 +58,14 @@ public class EntitySpawner : MonoBehaviour
 
     public void SpawnCharacter(Vector3 pos, string name){
         GameObject newCharacter = GameObject.Instantiate(characterPrefab,pos,Quaternion.identity);
+        Stats stat = newCharacter.GetComponent<Stats>();
+        CharacterStatGenerator(stat);
         newCharacter.name = name;
         newCharacter.layer = 8;
-        Stats stat = newCharacter.GetComponent<Stats>();
+        
+        newCharacter.GetComponent<CharacterMove>().partyTarget = manager.player.transform;
         stat.myName = name;
-        CharacterStatGenerator(stat);
+        
         newCharacter.GetComponent<MeshRenderer>().material.color = gradient.Evaluate(stat.charm/100);
         manager.statManager.AddCharacter(newCharacter);
     }
@@ -73,6 +81,7 @@ public class EntitySpawner : MonoBehaviour
         stats.speed = speed;
         stats.charm = totalStats;
         stats.age = 20;
+        stats.health = 100;
 
         //add the charm stuff here if you want more complexity
     }

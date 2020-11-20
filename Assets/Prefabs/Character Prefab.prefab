@@ -211,6 +211,9 @@ MonoBehaviour:
   age: 20
   brains: 33
   charm: 33
+  strength: 0
+  heal: 0
+  health: 0
 --- !u!114 &8002671553346459364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,9 +227,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moving: 1
-  wooAble: 1
-  partyMember: 0
+  wooAble: 0
+  partyMember: 1
   isPlayer: 0
+  attack: 0
 --- !u!1 &4234840383565413483
 GameObject:
   m_ObjectHideFlags: 0

@@ -36,12 +36,11 @@ public class UIManager : MonoBehaviour
 
 
     void LoadPopUpTexts(){
-        for (int i = 0;i<5;i++){
+        for (int i = 0;i<10;i++){
             GameObject newPopup = Instantiate(textPopUp.gameObject,textPopUp.transform.position,textPopUp.transform.rotation,textPopUp.transform.parent);
             popupTexts.Enqueue(newPopup.GetComponent<TMP_Text>());
             newPopup.SetActive(false);
         }
-        popupTexts.Enqueue(textPopUp);//you get in there too dad!
     }
 
     void UpdateMainGUI(){
@@ -82,22 +81,23 @@ public class UIManager : MonoBehaviour
         panelTalking.gameObject.SetActive(false);
     }
 
-    public void HitGUI(Vector3 pos, float amount, bool critical = false){
-        DisplayPopup(pos,"-" + amount.ToString("F0"));
+    public void HitGUI(Vector3 pos, float amount, Color whatColor, bool critical = false){
+        DisplayPopup(pos,"-" + amount.ToString("F0"), whatColor);
     }
 
-    void DisplayPopup(Vector3 where, string what){
+    void DisplayPopup(Vector3 where, string what, Color whatColor){
         if (popupTexts.Count > 0){
             //where.y -=25;
             TMP_Text popup = popupTexts.Dequeue();
             Vector3 origSize = popup.transform.localScale;
             popup.transform.localScale = Vector3.zero;
+            popup.color = whatColor;
             popup.text = what;
-            popup.transform.position = where + new Vector3(Random.Range(-1f,1f),0,Random.Range(-1f,1f));
+            popup.transform.position = where;// + new Vector3(Random.Range(-1f,1f),0,0);//Random.Range(-3f,3f));
             popup.gameObject.SetActive(true);
             popup.transform.DOScale(origSize,0.1f).OnComplete(() => {
                 popup.transform.DOPunchScale(origSize*1.2f,0.3f,5,0.2f);
-                popup.transform.DOMoveY(where.y+10,3).OnComplete(() => popup.gameObject.SetActive(false));
+                popup.transform.DOMoveY(where.y+10,1).OnComplete(() => popup.gameObject.SetActive(false));
                 popupTexts.Enqueue(popup);
             });
         }

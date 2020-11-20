@@ -15,7 +15,7 @@ public class EnemyCutscene : MonoBehaviour
                 FindObjectOfType<CutsceneDirector>().EndFight();
             } else{
                 health--;
-                FindObjectOfType<UIManager>().HitGUI(transform.position, Random.Range(1,5));
+                FindObjectOfType<UIManager>().HitGUI(transform.position, Random.Range(1,5), Color.green);
             }
         }
 

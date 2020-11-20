@@ -20,6 +20,7 @@ public class Manager : MonoBehaviour
     [HideInInspector] public Particles particles;
     [HideInInspector] public float difficulty = 1;
     public string playerName;
+    public float hitForce;
 
     // Start is called before the first frame update
     void Awake()
@@ -33,7 +34,7 @@ public class Manager : MonoBehaviour
         particles = GetComponent<Particles>();
 
         //NewBaby(initialPlayer.gameObject, false);
-        //move.SetNewTarget(initialPlayer);
+        move.SetNewTarget(initialPlayer);
         statManager.AddCharacter(initialPlayer.gameObject);
         player = initialPlayer.gameObject;
         playerStats = initialPlayer.GetComponent<Stats>();
@@ -43,7 +44,7 @@ public class Manager : MonoBehaviour
 
     void Start(){
         for (int i = 0;i<totalCharacters;i++){
-            spawner.SpawnCharacter(new Vector3(Random.Range(-400,400),1.1f,Random.Range(-10,10)),i.ToString("F0"));
+            spawner.SpawnCharacter(new Vector3(Random.Range(-1,1),1.1f,Random.Range(-1,1)),i.ToString("F0"));
         }
         for (int i = 0;i<totalItems;i++){
             spawner.SpawnItem(new Vector3(Random.Range(-100,100),1.1f,Random.Range(-10,50)));
