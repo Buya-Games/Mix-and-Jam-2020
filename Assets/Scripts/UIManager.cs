@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour
     void Update(){
         if (manager.gameStarted){
             UpdateMainGUI();
-            UpdateGlobalStatsGUI();
+            //UpdateGlobalStatsGUI();
         }
         
     }
@@ -53,13 +53,13 @@ public class UIManager : MonoBehaviour
         // textPartyStrength.text = "Party Strength: " + manager.partyStrength.ToString("F0");
     }
 
-    void UpdateGlobalStatsGUI(){
-        textGlobalSpeed.text = "Global Speed: " + manager.statManager.globalSpeed.ToString("F0") + " (Max: " + manager.statManager.globalSpeedMax.ToString("F0") + ")";
-        textGlobalBrains.text = "Global Brains: " + manager.statManager.globalBrains.ToString("F0")  + " (Max: " + manager.statManager.globalBrainsMax.ToString("F0") + ")";
-        textGlobalCharm.text = "Global Charm: " + manager.statManager.globalCharm.ToString("F0")  + " (Max: " + manager.statManager.globalCharmMax.ToString("F0") + ")";
-        textGlobalPopulation.text = "Global Pop: " + manager.statManager.globalPopulation.ToString("F0");
+    // void UpdateGlobalStatsGUI(){
+    //     textGlobalSpeed.text = "Global Speed: " + manager.statManager.globalSpeed.ToString("F0") + " (Max: " + manager.statManager.globalSpeedMax.ToString("F0") + ")";
+    //     textGlobalBrains.text = "Global Brains: " + manager.statManager.globalBrains.ToString("F0")  + " (Max: " + manager.statManager.globalBrainsMax.ToString("F0") + ")";
+    //     textGlobalCharm.text = "Global Charm: " + manager.statManager.globalCharm.ToString("F0")  + " (Max: " + manager.statManager.globalCharmMax.ToString("F0") + ")";
+    //     textGlobalPopulation.text = "Global Pop: " + manager.statManager.globalPopulation.ToString("F0");
 
-    }
+    // }
 
     public void ShowResult(string text){
         textResult.text = text;

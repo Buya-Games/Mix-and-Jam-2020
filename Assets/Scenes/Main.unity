@@ -12010,11 +12010,9 @@ GameObject:
   m_Component:
   - component: {fileID: 384810772}
   - component: {fileID: 384810771}
-  - component: {fileID: 384810770}
   - component: {fileID: 384810769}
   - component: {fileID: 384810768}
   - component: {fileID: 384810767}
-  - component: {fileID: 384810773}
   - component: {fileID: 384810774}
   m_Layer: 0
   m_Name: GameManager
@@ -12049,6 +12047,15 @@ MonoBehaviour:
   minLimit: {x: 0, y: 0, z: 0}
   maxLimit: {x: 0, y: 0, z: 0}
   visibleMesh: {fileID: 296416868}
+  aroundMe:
+  - {x: -1, y: 0, z: 1}
+  - {x: 0, y: 0, z: 1}
+  - {x: 1, y: 0, z: 1}
+  - {x: -1, y: 0, z: 0}
+  - {x: 1, y: 0, z: 0}
+  - {x: -1, y: 0, z: -1}
+  - {x: 0, y: 0, z: -1}
+  - {x: 1, y: 0, z: -1}
 --- !u!114 &384810768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12091,12 +12098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8ce3d1a406019145a55a6cd86bfd106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterPrefab: {fileID: 4234840383278823955, guid: 1e4b701908f307c4ebefbd68ba8bf446, type: 3}
-  characterParent: {fileID: 1893471652}
-  enemyPrefab: {fileID: 8084963109724185631, guid: 1b7950ee31b1879449fe196a42b1aac4, type: 3}
-  enemyParent: {fileID: 412097263}
-  itemPrefab: {fileID: 5215654315212642865, guid: 767d6e8e2fb6a2d4e8b983b1ff2557e1, type: 3}
-  itemParent: {fileID: 540199268}
+  _creaturePrefab: {fileID: 4013399138116097630, guid: 39e03b90fa6d04f429467574d99cc89a, type: 3}
   gradient:
     serializedVersion: 2
     key0: {r: 1, g: 0.9133065, b: 0.75, a: 1}
@@ -12126,31 +12128,6 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
---- !u!114 &384810770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 384810766}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38b1cabb7ceb7d444b075e8df6976f83, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allCharacterObjects: []
-  allCharactersStats: []
-  partyCharacterObjects: []
-  partyCharacterStats: []
-  ageSpeed: 0.5
-  deathAge: 80
-  globalSpeed: 0
-  globalBrains: 0
-  globalCharm: 0
-  globalSpeedMax: 0
-  globalBrainsMax: 0
-  globalCharmMax: 0
-  globalPopulation: 0
 --- !u!114 &384810771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12165,7 +12142,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawner: {fileID: 0}
   ui: {fileID: 0}
-  statManager: {fileID: 0}
   move: {fileID: 0}
   gameStarted: 0
   totalCharacters: 5
@@ -12179,6 +12155,12 @@ MonoBehaviour:
   difficulty: 1
   playerName: 
   hitForce: 15
+  enemyLM:
+    serializedVersion: 2
+    m_Bits: 768
+  friendlyLM:
+    serializedVersion: 2
+    m_Bits: 4096
 --- !u!4 &384810772
 Transform:
   m_ObjectHideFlags: 0
@@ -12194,19 +12176,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &384810773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 384810766}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93601509bd2e9f84d8e9bb74bbf4287c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  babyParent: {fileID: 1893471652}
 --- !u!114 &384810774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19912,9 +19881,8 @@ GameObject:
   m_Component:
   - component: {fileID: 811120140}
   - component: {fileID: 811120137}
-  - component: {fileID: 811120136}
   - component: {fileID: 811120142}
-  - component: {fileID: 811120141}
+  - component: {fileID: 811120138}
   m_Layer: 9
   m_Name: Initial Character
   m_TagString: Untagged
@@ -19922,26 +19890,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &811120136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 811120135}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 799b7c000fbe9034b89233e7d2187f63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  myName: Player
-  speed: 33
-  age: 20
-  brains: 33
-  charm: 33
-  strength: 33
-  heal: 0
-  health: 100
 --- !u!65 &811120137
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19955,6 +19903,36 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2, y: 1, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &811120138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811120135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52c2037fe844e2946b7faee68298be53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _myName: 
+  _age: 20
+  _speed: 3
+  _maxHealth: 10
+  _strength: 3
+  _brains: 3
+  _charm: 3
+  _heal: 3
+  _alive: 1
+  _enemy: 0
+  _isPlayer: 1
+  _playerTarget: {fileID: 0}
+  _attackTarget: {fileID: 0}
+  _patrolTarget: {x: 0, y: 0, z: 0}
+  _myOffset: {x: 0, y: 0, z: 0}
+  _myLM:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!4 &811120140
 Transform:
   m_ObjectHideFlags: 0
@@ -19971,24 +19949,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &811120141
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 811120135}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dab0d7011e9c81343ab14b1af42d1b1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moving: 0
-  wooAble: 0
-  partyMember: 0
-  isPlayer: 1
-  attack: 0
-  partyTarget: {fileID: 0}
 --- !u!54 &811120142
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -31330,12 +31290,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab0d7011e9c81343ab14b1af42d1b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manager: {fileID: 0}
+  timeLimit: 0
+  counter: 0
+  mySpeed: 0
+  myDistance: 0
+  attackCounter: 0
+  attackTimer: 0
+  minWaitTime: 1
+  maxWaitTime: 3
+  minMoveTime: 2
+  maxMoveTime: 10
+  myDir: {x: 0, y: 0, z: 0}
+  myOffset: {x: 0, y: 0, z: 0}
   moving: 0
   wooAble: 0
   partyMember: 0
   isPlayer: 0
   attack: 0
   partyTarget: {fileID: 0}
+  enemyTarget: {fileID: 0}
+  myStats: {fileID: 0}
+  anim: {fileID: 0}
 --- !u!54 &1119839747
 Rigidbody:
   m_ObjectHideFlags: 0

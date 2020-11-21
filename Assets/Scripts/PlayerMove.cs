@@ -6,9 +6,7 @@ using Cinemachine;
 public class PlayerMove : MonoBehaviour
 {
     public Transform player;
-    float moveSpeed;
-    [SerializeField] float frequency;
-    [SerializeField] float magnitude;
+    [SerializeField] float moveSpeed, frequency, magnitude;
     Vector3 dir;
     Vector3 targetPos = new Vector3(0,1.6f,0);
     [SerializeField] LayerMask clickableLM;
@@ -21,11 +19,16 @@ public class PlayerMove : MonoBehaviour
     Rigidbody rb;
     public Vector3 minLimit, maxLimit;
     [SerializeField] Transform visibleMesh;
-    
+    [SerializeField]List<Vector3> aroundMe = new List<Vector3>();
+    public Queue<Vector3> offsetPositions = new Queue<Vector3>();
 
-    void Start(){
+    void Awake(){
         manager = GetComponent<Manager>();
         rb = player.GetComponent<Rigidbody>();
+
+        for (int i = 0;i<aroundMe.Count;i++){
+            offsetPositions.Enqueue(aroundMe[i] * 2);
+        }
         // Debug.Log(_target.GetComponent<BoxCollider>().bounds.max + "max");
         // Debug.Log(_target.GetComponent<BoxCollider>().bounds.min + "min");
         // Debug.Log(_target.GetComponent<BoxCollider>().bounds.extents + "extents");
@@ -70,7 +73,7 @@ public class PlayerMove : MonoBehaviour
                     rb.velocity = dir;
                 }
                 //if (dir != Vector3.zero){
-                    visibleMesh.localPosition = visibleMesh.localPosition + transform.up * Mathf.Sin(Time.time * frequency * moveSpeed) * magnitude;
+                    //visibleMesh.localPosition = visibleMesh.localPosition + transform.up * Mathf.Sin(Time.time * frequency * moveSpeed) * magnitude;
                 //}
             }
             if (mouse){
@@ -106,7 +109,7 @@ public class PlayerMove : MonoBehaviour
             } else if (hit.collider.gameObject.layer == 8){ // another character, move there and start talking
                 targetPos = hit.transform.position - new Vector3(1,0,1);
                 Debug.Log(hit.collider.gameObject.name);
-                hit.collider.gameObject.GetComponent<CharacterMove>().moving = false;
+                //hit.collider.gameObject.GetComponent<CharacterMove>().moving = false;
             } else if (hit.collider.gameObject.layer == 9){ // a party member, freeze game and show their stats
 
             }
@@ -119,8 +122,8 @@ public class PlayerMove : MonoBehaviour
 
     public void SetNewTarget(Transform target){
         player = target;
-        Stats newStats = target.GetComponent<Stats>();
-        moveSpeed = newStats.speed/10;
+        CreatureLogic playerStats = target.GetComponent<CreatureLogic>();
+        moveSpeed = playerStats._speed;
         virtualCamera.m_Follow = target;
         //virtualCamera.m_Lens.OrthographicSize = newStats.brains * .8f;
         var transposer = virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
