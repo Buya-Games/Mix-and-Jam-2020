@@ -5,60 +5,65 @@ using DG.Tweening;
 
 public class Manager : MonoBehaviour
 {
-    [HideInInspector] public EntitySpawner spawner;
+    
+    [HideInInspector] public Spawner spawner;
     [HideInInspector] public UIManager ui;
-    //[HideInInspector] public EntityStatManager statManager;
+    [HideInInspector] public PartyManager PartyManager;
     [HideInInspector] public PlayerMove move;
     [HideInInspector] public bool gameStarted;
-    [SerializeField] int totalCharacters, totalItems, totalEnemy;
+    [SerializeField] int totalCharacters, totalEnemy;
     [SerializeField] Transform initialPlayer;
     [HideInInspector] public bool wooing; //to avoid triggering more than one woo at a time
     [HideInInspector] public GameObject player;
     [HideInInspector] public Stats playerStats;
     //MatingProcess matingProcess;
     [HideInInspector] public Particles particles;
-    [HideInInspector] public float difficulty = 1;
     public string playerName;
     public float hitForce;
-    public LayerMask enemyLM, friendlyLM;
+    public LayerMask enemyLM, friendlyLM, PlayerOnlyLM;
 
     // Start is called before the first frame update
     void Awake()
     {
-        //Time.timeScale = 20;
-        spawner = GetComponent<EntitySpawner>();
+        spawner = GetComponent<Spawner>();
         ui = GetComponent<UIManager>();
-        //statManager = GetComponent<EntityStatManager>();
         move = GetComponent<PlayerMove>();
+        PartyManager = GetComponent<PartyManager>();
         //matingProcess = GetComponent<MatingProcess>();
         particles = GetComponent<Particles>();
 
-        //NewBaby(initialPlayer.gameObject, false);
         move.SetNewTarget(initialPlayer);
-        //statManager.AddCharacter(initialPlayer.gameObject);
         player = initialPlayer.gameObject;
         playerStats = initialPlayer.GetComponent<Stats>();
         player.GetComponent<CreatureLogic>().SetCreature(player.transform.position,false);
-        //statManager.AddPartyCharacter(initialPlayer.gameObject, true);
-
     }
 
     void Start(){
+        SpawnPartners();
+    }
+
+    public void SpawnPartners(){
+        int xLoc = 0;
         for (int i = 0;i<totalCharacters;i++){
-            spawner.SpawnCreature(new Vector3(Random.Range(-1,1),1.1f,Random.Range(-1,1)),"creature " + i.ToString("F0"), false);
+            GameObject potential = spawner.SpawnCreature(new Vector3(xLoc,1.1f,215),"partner " + i.ToString("F0"), false,false,true);
+            potential.AddComponent<PartnerLogic>();
+            PartyManager.PotentialPartners.Add(potential);
+            xLoc+=5;
         }
-        // for (int i = 0;i<totalItems;i++){
-        //     spawner.SpawnItem(new Vector3(Random.Range(-100,100),1.1f,Random.Range(-10,50)));
-        // }
+    }
+
+    public void SelectPartner(GameObject partner){
+        PartyManager.CleanPotentials(partner);
+        GameObject childLogic = spawner.SpawnCreature(player.transform.position,(player.name + " " + partner.name),false,true,true);
+        childLogic.GetComponent<CreatureLogic>().SetChild(player.GetComponent<CreatureLogic>(),partner.GetComponent<CreatureLogic>());
+        partner.GetComponent<CreatureLogic>().SetCreature(partner.transform.position,false,false,true);
+    }
+
+    public void SpawnEnemies(){
         for (int i = 0;i<totalEnemy;i++){
-            spawner.SpawnCreature(new Vector3(Random.Range(-100,100),1.1f,Random.Range(-10,50)),"enemy " + i.ToString("F0"), true);
+            spawner.SpawnCreature(new Vector3(Random.Range(-100,100),1.1f,Random.Range(350,400)),"enemy " + i.ToString("F0"), true);
         }
         gameStarted = true;
-        Vector3 origScale = initialPlayer.transform.localScale;
-        initialPlayer.transform.localScale = Vector3.zero;
-        initialPlayer.transform.DOScale(origScale,1f);
-        particles.PlayBaby(initialPlayer.position);
-        
     }
 
     // public void BeginWoo(GameObject wooTarget){

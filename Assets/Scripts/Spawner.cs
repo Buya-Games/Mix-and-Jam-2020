@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntitySpawner : MonoBehaviour
+public class Spawner : MonoBehaviour
 {
     [SerializeField] GameObject _creaturePrefab;
-    // [SerializeField] GameObject itemPrefab;
-    // [SerializeField] Transform itemParent;
+    [SerializeField] GameObject _itemPrefab;
     Queue<GameObject> _creatureQueue = new Queue<GameObject>();
+    Queue<GameObject> _itemQueue = new Queue<GameObject>();
     Manager manager;
     [SerializeField] Gradient gradient;
 
@@ -16,12 +16,20 @@ public class EntitySpawner : MonoBehaviour
         SpawnQueueReserve();
     }
 
-    void SpawnQueueReserve(){ //just spawning 10 bodies to have some reserve for the queue at the start
+    void SpawnQueueReserve(){ //spawning for creature pool queue
         for (int i = 0;i<(20);i++){
-            GameObject newCreature = GameObject.Instantiate(_creaturePrefab,Vector3.down * 2,Quaternion.identity);
-            _creatureQueue.Enqueue(newCreature);
-            newCreature.SetActive(false);
+            SpawnCreature();
+
+            GameObject newItem = GameObject.Instantiate(_itemPrefab,Vector3.down * 2,Quaternion.identity);
+            _itemQueue.Enqueue(newItem);
+            newItem.SetActive(false);
         }
+    }
+
+    void SpawnCreature(){
+        GameObject newCreature = GameObject.Instantiate(_creaturePrefab,Vector3.down * 2,Quaternion.identity);
+        _creatureQueue.Enqueue(newCreature);
+        newCreature.SetActive(false);
     }
 
     public void RecyleCreature(GameObject who){
@@ -29,12 +37,20 @@ public class EntitySpawner : MonoBehaviour
         who.SetActive(false);
     }
 
-    public void SpawnCreature(Vector3 where, string creatureName, bool enemy = false){
+    public GameObject SpawnCreature(Vector3 where, string creatureName, bool enemy = false, bool child = false, bool returnIt = false){
+        if (_creatureQueue.Count == 0){
+            SpawnCreature();
+        }
         GameObject newCreature = _creatureQueue.Dequeue();
         newCreature.name = creatureName;
         CreatureLogic logic = newCreature.GetComponent<CreatureLogic>();
-        logic.SetCreature(where,enemy);
+        logic.SetCreature(where, enemy, child);
         newCreature.SetActive(true);
+        if (!returnIt){
+            return null;
+        } else {
+            return newCreature;
+        }
     }
 
     // void QueueEnemies(GameObject){
@@ -89,10 +105,13 @@ public class EntitySpawner : MonoBehaviour
     //     //add the charm stuff here if you want more complexity
     // }
 
-    // public void SpawnItem(Vector3 pos){
-    //     GameObject newItem = GameObject.Instantiate(itemPrefab,pos,Quaternion.identity);
-    //     allItems.Enqueue(newItem);
-    // }
+    public void SpawnItem(Vector3 pos){
+        GameObject newItem = _itemQueue.Dequeue();
+        pos.y = 5;
+        newItem.transform.position = pos;
+        newItem.SetActive(true);
+        _itemQueue.Enqueue(newItem);
+    }
 
     // public void CircleOfLife(GameObject addToQueue){
     //     lifepoolQueue.Enqueue(addToQueue);

@@ -8,16 +8,21 @@ public class UIManager : MonoBehaviour
 {
 
     [SerializeField] TMP_Text textAge, textSpeed, textBrains, textCharm, textGlobalSpeed, textGlobalBrains, textGlobalCharm, textGlobalPopulation, textResult;
-    [SerializeField] GameObject panelTalking, btn1, btn2, btn3, btn4, face;
+    [SerializeField] GameObject panelTalking, btn1, btn2, btn3, btn4, face, healthBarPrefab;
     public TMP_Text textName, textTalking;
     [SerializeField] TMP_Text textPopUp;
     Queue<TMP_Text> popupTexts = new Queue<TMP_Text>();
+    [SerializeField] GameObject[] partyUIs;
+    [HideInInspector] public Queue<GameObject> partyUIQueue = new Queue<GameObject>();
+    Queue<GameObject> _healthBarsQueue = new Queue<GameObject>();
 
     Manager manager;
 
-    void Start(){
+    void Awake(){
         manager = GetComponent<Manager>();
         LoadPopUpTexts();
+        InitializePartyUI();
+        CreateHealthBar(10);
     }
 
 
@@ -31,6 +36,40 @@ public class UIManager : MonoBehaviour
 
     public void StartSpeaking(bool start = true){
         panelTalking.SetActive(start);
+
+    }
+
+    void InitializePartyUI(){
+        for (int i = 0;i<partyUIs.Length;i++){
+            partyUIQueue.Enqueue(partyUIs[i]);
+            partyUIs[i].SetActive(false);
+        }
+    }
+
+    void CreateHealthBar(int howMany){
+        for (int i = 0; i<howMany;i++){
+            GameObject newBar = Instantiate(healthBarPrefab,Vector3.zero,Quaternion.identity);
+            _healthBarsQueue.Enqueue(newBar);
+            newBar.SetActive(false);
+        }
+    }
+
+    public Transform CreateMyHealthBar(Transform parent){
+        if (_healthBarsQueue.Count == 0){
+            CreateHealthBar(1);
+        }
+        Transform newBar = _healthBarsQueue.Dequeue().transform;
+        newBar.SetParent(parent);
+        float rando = Random.Range(1.75f,2.25f);
+        newBar.localPosition = new Vector3(0,rando,0);
+        newBar.localRotation = Quaternion.Euler(45,0,0);
+        newBar.gameObject.SetActive(true);
+        return newBar;
+    }
+
+    public void RemoveHealthBar(GameObject healthBar){
+        _healthBarsQueue.Enqueue(healthBar);
+        healthBar.SetActive(false);
 
     }
 
