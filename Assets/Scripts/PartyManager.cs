@@ -23,5 +23,19 @@ public class PartyManager : MonoBehaviour
         PartyMembers.Add(except);
         PotentialPartners.Clear();
     }
+
+    public void ChangePlayer(GameObject newPlayer){
+        if (PartyMembers.Contains(newPlayer)){
+            _manager.player = newPlayer;
+            _manager.move.SetNewTarget(newPlayer.transform);
+            foreach (GameObject member in PartyMembers){
+                member.GetComponent<CreatureLogic>().SetPartner();
+            }
+            newPlayer.GetComponent<CreatureLogic>()._player = true;
+            newPlayer.GetComponent<CreatureLogic>()._party = false;
+        } else {
+            Debug.Log("clicked creature is not a party member");
+        }
+    }
     
 }

@@ -26,6 +26,7 @@ public class CreatureLogic : MonoBehaviour
     TMP_Text _textName;
     Image _displayHealth, _healthBar;
     [HideInInspector] public float[] Face;
+    [SerializeField] Color hairColor;
     
     
 
@@ -34,18 +35,13 @@ public class CreatureLogic : MonoBehaviour
         //_anim = GetComponent<Animator>();
     }
 
-    public void SetCreature(Vector3 where, bool enemy = false, bool child = false, bool partyMember = false){
+    public void SetCreature(Vector3 where, bool enemy = false, bool child = false){
         _enemy = enemy;
-        _party = partyMember;
+        _party = false;
         transform.position = where;
         if (!child){
             SetStats();
         }
-    }
-
-    void CreateFace(){
-        Face = _manager.FaceGenerator.GenerateRandomFace();
-        _visibleMesh.Find("Head").GetComponent<MeshRenderer>().material.color = _manager.FaceGenerator.GetHairColor(Face[6]);
     }
 
     public void SetChild(CreatureLogic faja, CreatureLogic maja){
@@ -55,7 +51,13 @@ public class CreatureLogic : MonoBehaviour
         Tech = Mathf.Max(faja.Tech, maja.Tech) * Random.Range(.8f,1.2f);
         Heal = Mathf.Max(faja.Heal, maja.Heal) * Random.Range(.8f,1.2f);
         SetStats(true);
-        _party = true;
+        SetPlayer();
+    }
+
+    public void SetPartner(){
+        _enemy = false;
+        _player = false;
+        SetPlayer();
     }
 
     void SetStats(bool child = false){
@@ -79,6 +81,8 @@ public class CreatureLogic : MonoBehaviour
         _attackTimer = 10/Speed;// just a random number for now
         _partyRange = 15;// just a random number for now
 
+        _visibleMesh = transform.Find("VisibleMesh");
+
         if (_enemy){ //if enemy
             gameObject.layer = 12;
             _origColor = new Color(0,0.549f,0.204f,0);
@@ -86,26 +90,26 @@ public class CreatureLogic : MonoBehaviour
         } else { //if friendly
             _origColor = new Color(1,0.729f,0.514f,0);
             _myLM = _manager.friendlyLM;
+            MyName = _manager.FaceGenerator.GenerateName();
+            CreateFace();
             if (!_player){ //if friendly NPC
                 gameObject.layer = 9;
-                SetPlayer();
             } else { //if player
                 gameObject.layer = 8;
             }
             //SetUI();
         }
-        SetHealthBar();
         GetComponentInChildren<MeshRenderer>().material.color = _origColor;
+        SetHealthBar();
         _alive = true;
-        _visibleMesh = transform.Find("VisibleMesh");
-        MyName = _manager.FaceGenerator.GenerateName();
-        CreateFace();
+        this.gameObject.name = MyName;
         // float mySize = Mathf.Clamp(_strength/2,0.1f,3);
         // transform.localScale = new Vector3(mySize,mySize*2,mySize);
         // myFOV.SetFOV(myStats.brains);
     }
 
     void SetPlayer(){ //creates a random offset away from the main player for this character
+        _party = true;
         _playerTarget = _manager.player.transform;
 
         if (_manager.move.offsetPositions.Count > 0){
@@ -116,6 +120,12 @@ public class CreatureLogic : MonoBehaviour
             _myOffset = new Vector3(_randoDist * (Random.Range(0,2)-1),0,_randoDist * (Random.Range(0,2)-1));
         }
         
+    }
+
+    void CreateFace(){
+        Face = _manager.FaceGenerator.GenerateRandomFace();
+        _visibleMesh.Find("Head").GetComponent<MeshRenderer>().material.color = _manager.FaceGenerator.GetHairColor(Face[6]);
+        hairColor = _manager.FaceGenerator.GetHairColor(Face[6]);
     }
 
     void SetUI(){

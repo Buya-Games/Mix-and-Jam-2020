@@ -37,6 +37,7 @@ public class Manager : MonoBehaviour
     void Start(){
         SpawnPartners();
         player.GetComponent<CreatureLogic>().SetCreature(player.transform.position,false);
+        PartyManager.PartyMembers.Add(player);
         move.SetNewTarget(initialPlayer);
     }
 
@@ -53,9 +54,14 @@ public class Manager : MonoBehaviour
 
     public void SelectPartner(GameObject partner){
         PartyManager.CleanPotentials(partner);
-        GameObject childLogic = spawner.SpawnCreature(player.transform.position,(player.name + " " + partner.name),false,true,true);
-        childLogic.GetComponent<CreatureLogic>().SetChild(player.GetComponent<CreatureLogic>(),partner.GetComponent<CreatureLogic>());
-        partner.GetComponent<CreatureLogic>().SetCreature(partner.transform.position,false,false,true);
+        GameObject child = spawner.SpawnCreature(player.transform.position,(player.name + " " + partner.name),false,true,true);
+        child.GetComponent<CreatureLogic>().SetChild(player.GetComponent<CreatureLogic>(),partner.GetComponent<CreatureLogic>());
+        child.AddComponent<UIMouseOver>();
+        partner.GetComponent<CreatureLogic>().SetPartner();
+        PartyManager.PartyMembers.Add(partner);
+        PartyManager.PartyMembers.Add(child);
+        //partner.GetComponent<CreatureLogic>().SetCreature(partner.transform.position,false,false,true);
+        SpawnEnemies();
     }
 
     public void SpawnEnemies(){

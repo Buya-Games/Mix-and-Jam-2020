@@ -13110,7 +13110,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a7ffb3d7ade27164282283cbc42376c9, type: 3}
   - {fileID: 21300000, guid: 6de9fb1a44eb78f48aff0c7b9506b935, type: 3}
   - {fileID: 21300000, guid: fe6a710f6a8e4b6428038b0e66299ec8, type: 3}
-  - {fileID: 21300000, guid: 8724f77c2d85a0c4a8e3f495773ac0e8, type: 3}
+  - {fileID: 21300000, guid: 6852a69c5cbf40b4e94454417e5b62a5, type: 3}
   - {fileID: 21300000, guid: d0d473e500e7a9f45a0328c4f320ade4, type: 3}
   - {fileID: 21300000, guid: f285518c2b2113f48971f364703f26be, type: 3}
   - {fileID: 21300000, guid: 6852a69c5cbf40b4e94454417e5b62a5, type: 3}
@@ -13145,17 +13145,17 @@ MonoBehaviour:
   - o
   _faceGradient:
     serializedVersion: 2
-    key0: {r: 0.3584906, g: 0.15048385, b: 0.03551086, a: 1}
-    key1: {r: 0.9716981, g: 0.92079246, b: 0.5271004, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
+    key0: {r: 0.4339623, g: 0.2421192, b: 0.13714845, a: 1}
+    key1: {r: 0.990566, g: 0.96872014, b: 0.7989943, a: 1}
+    key2: {r: 1, g: 0.8352006, b: 0.4292453, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 65535
-    ctime2: 0
+    ctime1: 35659
+    ctime2: 65535
     ctime3: 0
     ctime4: 0
     ctime5: 0
@@ -13170,26 +13170,26 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_NumColorKeys: 2
+    m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   _hairGradient:
     serializedVersion: 2
-    key0: {r: 1, g: 0, b: 0, a: 1}
-    key1: {r: 1, g: 0.94274926, b: 0, a: 1}
-    key2: {r: 0, g: 1, b: 0.0004093647, a: 0}
-    key3: {r: 1, g: 0, b: 0.97662354, a: 0}
-    key4: {r: 0, g: 0.11046457, b: 1, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
+    key0: {r: 0, g: 0, b: 0, a: 1}
+    key1: {r: 0.5660378, g: 0.2056737, b: 0, a: 1}
+    key2: {r: 1, g: 0.94274926, b: 0, a: 0}
+    key3: {r: 1, g: 1, b: 1, a: 0}
+    key4: {r: 1, g: 0, b: 0.21758795, a: 0}
+    key5: {r: 0, g: 0.11046457, b: 1, a: 0}
+    key6: {r: 1, g: 1, b: 1, a: 0}
+    key7: {r: 0, g: 1, b: 0.0004093647, a: 0}
     ctime0: 0
-    ctime1: 13685
-    ctime2: 34310
-    ctime3: 53006
-    ctime4: 65535
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
+    ctime1: 11951
+    ctime2: 22359
+    ctime3: 31226
+    ctime4: 41827
+    ctime5: 52428
+    ctime6: 59945
+    ctime7: 65535
     atime0: 0
     atime1: 65535
     atime2: 0
@@ -13199,8 +13199,22 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_NumColorKeys: 5
+    m_NumColorKeys: 8
     m_NumAlphaKeys: 2
+  badWords:
+  - fuck
+  - shit
+  - cunt
+  - dick
+  - elea
+  - elly
+  - elea
+  - eleano
+  - saki
+  - sak
+  - lulu
+  - lul
+  - ruru
 --- !u!1 &296416867
 GameObject:
   m_ObjectHideFlags: 0
@@ -24561,6 +24575,7 @@ MonoBehaviour:
   _visibleMesh: {fileID: 0}
   _myUI: {fileID: 0}
   Face: []
+  hairColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &811120140
 Transform:
   m_ObjectHideFlags: 0
@@ -37621,9 +37636,7 @@ GameObject:
   - component: {fileID: 1119839751}
   - component: {fileID: 1119839750}
   - component: {fileID: 1119839749}
-  - component: {fileID: 1119839748}
   - component: {fileID: 1119839747}
-  - component: {fileID: 1119839746}
   - component: {fileID: 1119839745}
   m_Layer: 9
   m_Name: Save Character
@@ -37651,18 +37664,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1119839746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1119839744}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dab0d7011e9c81343ab14b1af42d1b1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &1119839747
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -37679,26 +37680,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1119839748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1119839744}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 799b7c000fbe9034b89233e7d2187f63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MyName: 
-  Strength: 0
-  Speed: 0
-  Range: 0
-  Charm: 0
-  Heal: 0
-  MaxHealth: 0
-  Health: 0
 --- !u!65 &1119839749
 BoxCollider:
   m_ObjectHideFlags: 0

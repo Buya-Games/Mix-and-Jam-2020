@@ -12,6 +12,7 @@ public class FaceGenerator : MonoBehaviour
     int _hairNo = 12;//this loaded directly in Editor instead of from /Resources/ like the others
     [SerializeField] string[] consonants, vowels;
     [SerializeField] Gradient _faceGradient, _hairGradient;
+    [SerializeField] string[] badWords;
     
     // Start is called before the first frame update
     void Start()
@@ -39,7 +40,7 @@ public class FaceGenerator : MonoBehaviour
     public string GenerateName(){
         string rando = "";
         bool vowel = false;
-        int nameLength = Random.Range(3,6);
+        int nameLength = Random.Range(3,7);
         for (int i = 0;i<nameLength;i++){
             if (vowel){
                 vowel = false;
@@ -51,7 +52,18 @@ public class FaceGenerator : MonoBehaviour
                 rando+=consonants[character];
             }
         }
+        rando = BadWordChecker(rando);
         return rando;
+    }
+
+    private string BadWordChecker(string checkThis){
+        for (int i = 0;i<badWords.Length;i++){
+            if (checkThis.Contains(badWords[i])){
+                checkThis = GenerateName();
+            }
+        }
+        return checkThis;
+        
     }
 
     public float[] GenerateRandomFace(){

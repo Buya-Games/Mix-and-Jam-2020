@@ -24,7 +24,6 @@ public class PlayerMove : MonoBehaviour
 
     void Awake(){
         manager = GetComponent<Manager>();
-        rb = player.GetComponent<Rigidbody>();
 
         for (int i = 0;i<aroundMe.Count;i++){
             offsetPositions.Enqueue(aroundMe[i] * 2);
@@ -46,35 +45,22 @@ public class PlayerMove : MonoBehaviour
             if (keyboard){
                 dir = Vector3.zero;
                 if (Input.GetKey(KeyCode.W)){
-                    //rb.AddForce(Vector3.forward * Time.deltaTime * moveSpeed * 10);
                     dir += Vector3.forward;
-                    MovePlayer();
                 }
                 if (Input.GetKey(KeyCode.S)){
-                    //rb.AddForce(Vector3.back * Time.deltaTime * moveSpeed  * 10);
                     dir += Vector3.back;
-                    MovePlayer();
                 }
                 if (Input.GetKey(KeyCode.A)){
-                    //rb.AddForce(Vector3.left * Time.deltaTime * moveSpeed  * 10);
                     dir += Vector3.left;
-                    MovePlayer();
                 }
                 if (Input.GetKey(KeyCode.D)){
-                    //rb.AddForce(Vector3.right * Time.deltaTime * moveSpeed  * 10);
-                    dir += Vector3.right;
-                    MovePlayer();
+                    dir += Vector3.right;   
                 }
-                // if (Input.GetAxis("Vertical") == 0 && Input.GetAxis("Horizontal") == 0){
-                //     dir = Vector3.zero;
-                //     rb.velocity = dir;
-                // }
                 if (dir == Vector3.zero){
                     rb.velocity = dir;
+                } else {
+                    MovePlayer();
                 }
-                //if (dir != Vector3.zero){
-                    //visibleMesh.localPosition = visibleMesh.localPosition + transform.up * Mathf.Sin(Time.time * frequency * moveSpeed) * magnitude;
-                //}
             }
             if (mouse){
                 if (Input.GetMouseButtonDown(0)){
@@ -122,6 +108,7 @@ public class PlayerMove : MonoBehaviour
 
     public void SetNewTarget(Transform target){
         player = target;
+        rb = player.GetComponent<Rigidbody>();
         CreatureLogic playerStats = target.GetComponent<CreatureLogic>();
         moveSpeed = playerStats.Speed;
         virtualCamera.m_Follow = target;

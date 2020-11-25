@@ -29,4 +29,8 @@ public class UIMouseOver: MonoBehaviour
     void OnMouseExit(){
         _manager.ui.HideStats();
     }
+
+    void OnMouseDown(){
+        _manager.PartyManager.ChangePlayer(transform.gameObject);
+    }
 }
