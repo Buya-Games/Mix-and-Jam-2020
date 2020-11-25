@@ -15,6 +15,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject[] partyUIs;
     [HideInInspector] public Queue<GameObject> partyUIQueue = new Queue<GameObject>();
     Queue<GameObject> _healthBarsQueue = new Queue<GameObject>();
+    [SerializeField] FaceDisplay _faceStats;
+
+    [SerializeField] GameObject charaterStatsDisplay;
+    [SerializeField] TMP_Text textStatsDisplayNameAge, textStatsDisplayStrengthSpeed, textStatsDisplayTechRange, textStatsDisplayHealth;
 
     Manager manager;
 
@@ -23,6 +27,11 @@ public class UIManager : MonoBehaviour
         LoadPopUpTexts();
         InitializePartyUI();
         CreateHealthBar(10);
+        
+    }
+
+    void Start(){
+        _faceStats = _faceStats.GetComponent<FaceDisplay>();
     }
 
 
@@ -73,6 +82,21 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public void DisplayStats(float[] displayFace, string name, float strength, float speed, float range, float tech, float age, float health, float maxHealth, Vector3 where){
+        textStatsDisplayNameAge.text = name + " (" + age.ToString("F0") + ")";
+        textStatsDisplayHealth.text = health.ToString("F0") + "/" + maxHealth.ToString("F0");
+        textStatsDisplayStrengthSpeed.text = "STR: " + strength.ToString("F2") + " SPEED: " + speed.ToString("F2");
+        textStatsDisplayTechRange.text = "TECH: " + tech.ToString("F2") + " RANGE: " + range.ToString("F2");
+        where.y = 5;
+        charaterStatsDisplay.transform.position = where;
+        _faceStats.DisplayFace(displayFace);
+        charaterStatsDisplay.SetActive(true);
+    }
+
+    public void HideStats(){
+        charaterStatsDisplay.SetActive(false);
+    }
+
 
     void LoadPopUpTexts(){
         for (int i = 0;i<10;i++){
@@ -110,11 +134,11 @@ public class UIManager : MonoBehaviour
         textResult.text = "";
     }
 
-    public void DisplayWoo(Stats wooTargetStats){
-        //btnWoo.onClick.AddListener(() => SelectRegion(myNumber, myAbrv, myFullname));//, newBtn.GetComponent<RectTransform>()));      
-        panelTalking.gameObject.SetActive(true);
-        textName.text = wooTargetStats.myName;
-    }
+    // public void DisplayWoo(Stats wooTargetStats){
+    //     //btnWoo.onClick.AddListener(() => SelectRegion(myNumber, myAbrv, myFullname));//, newBtn.GetComponent<RectTransform>()));      
+    //     panelTalking.gameObject.SetActive(true);
+    //     textName.text = wooTargetStats.myName;
+    // }
 
     public void CloseWoo(){
         panelTalking.gameObject.SetActive(false);

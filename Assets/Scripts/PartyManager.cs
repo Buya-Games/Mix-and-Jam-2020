@@ -16,6 +16,7 @@ public class PartyManager : MonoBehaviour
         foreach (GameObject potential in PotentialPartners){
             if (potential != except){
                 Destroy(potential.GetComponent<PartnerLogic>());
+                Destroy(potential.GetComponent<UIMouseOver>());
                 _manager.spawner.RecyleCreature(potential);
             }
         }

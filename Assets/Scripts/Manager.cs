@@ -10,12 +10,12 @@ public class Manager : MonoBehaviour
     [HideInInspector] public UIManager ui;
     [HideInInspector] public PartyManager PartyManager;
     [HideInInspector] public PlayerMove move;
+    [HideInInspector] public FaceGenerator FaceGenerator;
     [HideInInspector] public bool gameStarted;
+    
     [SerializeField] int totalCharacters, totalEnemy;
     [SerializeField] Transform initialPlayer;
-    [HideInInspector] public bool wooing; //to avoid triggering more than one woo at a time
     [HideInInspector] public GameObject player;
-    [HideInInspector] public Stats playerStats;
     //MatingProcess matingProcess;
     [HideInInspector] public Particles particles;
     public string playerName;
@@ -29,17 +29,15 @@ public class Manager : MonoBehaviour
         ui = GetComponent<UIManager>();
         move = GetComponent<PlayerMove>();
         PartyManager = GetComponent<PartyManager>();
-        //matingProcess = GetComponent<MatingProcess>();
         particles = GetComponent<Particles>();
-
-        move.SetNewTarget(initialPlayer);
+        FaceGenerator = GetComponentInChildren<FaceGenerator>();
         player = initialPlayer.gameObject;
-        playerStats = initialPlayer.GetComponent<Stats>();
-        player.GetComponent<CreatureLogic>().SetCreature(player.transform.position,false);
     }
 
     void Start(){
         SpawnPartners();
+        player.GetComponent<CreatureLogic>().SetCreature(player.transform.position,false);
+        move.SetNewTarget(initialPlayer);
     }
 
     public void SpawnPartners(){
@@ -47,6 +45,7 @@ public class Manager : MonoBehaviour
         for (int i = 0;i<totalCharacters;i++){
             GameObject potential = spawner.SpawnCreature(new Vector3(xLoc,1.1f,215),"partner " + i.ToString("F0"), false,false,true);
             potential.AddComponent<PartnerLogic>();
+            potential.AddComponent<UIMouseOver>();
             PartyManager.PotentialPartners.Add(potential);
             xLoc+=5;
         }

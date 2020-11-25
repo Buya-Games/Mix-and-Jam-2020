@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 public class Stats : MonoBehaviour
 {
-    public string myName;
-    public float speed;
-    public float age;
-    public float brains;
-    public float charm;
-    public float strength;
-    public float heal;
-    public float health;
+    public string MyName;
+    public float Strength;
+    public float Speed;
+    public float Range;
+    public float Charm;
+    public float Heal;
+    public float MaxHealth;
+    public float Health;
 
 }

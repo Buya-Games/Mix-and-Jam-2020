@@ -77,7 +77,7 @@ public class PlayerMove : MonoBehaviour
                 //}
             }
             if (mouse){
-                if (Input.GetMouseButtonDown(0) && !manager.wooing){
+                if (Input.GetMouseButtonDown(0)){
                     MoveMouse();
                 }
                 if (player.position != targetPos){
@@ -123,7 +123,7 @@ public class PlayerMove : MonoBehaviour
     public void SetNewTarget(Transform target){
         player = target;
         CreatureLogic playerStats = target.GetComponent<CreatureLogic>();
-        moveSpeed = playerStats._speed;
+        moveSpeed = playerStats.Speed;
         virtualCamera.m_Follow = target;
         //virtualCamera.m_Lens.OrthographicSize = newStats.brains * .8f;
         var transposer = virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
