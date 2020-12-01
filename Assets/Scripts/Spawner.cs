@@ -32,7 +32,20 @@ public class Spawner : MonoBehaviour
         newCreature.SetActive(false);
     }
 
-    public void RecyleCreature(GameObject who){
+    public void SpawnItem(Vector3 pos){
+        GameObject newItem = _itemQueue.Dequeue();
+        pos.y = 0;
+        newItem.transform.position = pos;
+        newItem.SetActive(true);
+        _itemQueue.Enqueue(newItem);
+    }
+
+    public void RecycleCreature(GameObject who){
+        _itemQueue.Enqueue(who);
+        who.SetActive(false);
+    }
+
+    public void RecycleItem(GameObject who){
         _creatureQueue.Enqueue(who);
         who.SetActive(false);
     }
@@ -44,8 +57,8 @@ public class Spawner : MonoBehaviour
         GameObject newCreature = _creatureQueue.Dequeue();
         newCreature.name = creatureName;
         CreatureLogic logic = newCreature.GetComponent<CreatureLogic>();
-        logic.SetCreature(where, enemy, child);
         newCreature.SetActive(true);
+        logic.SetCreature(where, enemy, child);
         if (!returnIt){
             return null;
         } else {
@@ -105,13 +118,6 @@ public class Spawner : MonoBehaviour
     //     //add the charm stuff here if you want more complexity
     // }
 
-    public void SpawnItem(Vector3 pos){
-        GameObject newItem = _itemQueue.Dequeue();
-        pos.y = 5;
-        newItem.transform.position = pos;
-        newItem.SetActive(true);
-        _itemQueue.Enqueue(newItem);
-    }
 
     // public void CircleOfLife(GameObject addToQueue){
     //     lifepoolQueue.Enqueue(addToQueue);

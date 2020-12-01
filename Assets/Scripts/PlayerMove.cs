@@ -43,46 +43,27 @@ public class PlayerMove : MonoBehaviour
     {
         if (gameLive){
             if (keyboard){
-                dir = Vector3.zero;
-                if (Input.GetKey(KeyCode.W)){
-                    dir += Vector3.forward;
-                }
-                if (Input.GetKey(KeyCode.S)){
-                    dir += Vector3.back;
-                }
-                if (Input.GetKey(KeyCode.A)){
-                    dir += Vector3.left;
-                }
-                if (Input.GetKey(KeyCode.D)){
-                    dir += Vector3.right;   
-                }
-                if (dir == Vector3.zero){
-                    rb.velocity = dir;
-                } else {
-                    MovePlayer();
-                }
+                dir = new Vector3(Input.GetAxisRaw ("Horizontal"),0,Input.GetAxisRaw("Vertical")).normalized;
             }
-            if (mouse){
-                if (Input.GetMouseButtonDown(0)){
-                    MoveMouse();
-                }
-                if (player.position != targetPos){
-                    player.position = Vector3.MoveTowards(player.position, targetPos, moveSpeed * Time.deltaTime);
-                    player.position = player.position + transform.up * Mathf.Sin(Time.time * frequency * moveSpeed) * magnitude;
-                }
-            }
-        }
-        if (cutscene){
-            rb.isKinematic = true;
-            player.position = player.position + transform.up * Mathf.Sin(Time.time * 5 * 3) * 0.015f;
-            player.position += Vector3.forward * 13.3f * Time.deltaTime;
+        //     if (mouse){
+        //         if (Input.GetMouseButtonDown(0)){
+        //             MoveMouse();
+        //         }
+        //         if (player.position != targetPos){
+        //             player.position = Vector3.MoveTowards(player.position, targetPos, moveSpeed * Time.deltaTime);
+        //             player.position = player.position + transform.up * Mathf.Sin(Time.time * frequency * moveSpeed) * magnitude;
+        //         }
+        //     }
+        // }
+        // if (cutscene){
+        //     rb.isKinematic = true;
+        //     player.position = player.position + transform.up * Mathf.Sin(Time.time * 5 * 3) * 0.015f;
+        //     player.position += Vector3.forward * 13.3f * Time.deltaTime;
         }
     }
 
-    void MovePlayer(){
-        rb.velocity = (dir * moveSpeed);
-        //rb.AddForce(dir * moveSpeed);
-        // player.position += dir * Time.deltaTime * moveSpeed;
+    void FixedUpdate(){
+        rb.MovePosition(rb.position + dir * Time.fixedDeltaTime * moveSpeed);
     }
 
     void MoveMouse(){
@@ -109,15 +90,15 @@ public class PlayerMove : MonoBehaviour
     public void SetNewTarget(Transform target){
         player = target;
         rb = player.GetComponent<Rigidbody>();
-        CreatureLogic playerStats = target.GetComponent<CreatureLogic>();
-        moveSpeed = playerStats.Speed;
+        moveSpeed = target.GetComponent<CreatureLogic>().Speed;
         virtualCamera.m_Follow = target;
-        //virtualCamera.m_Lens.OrthographicSize = newStats.brains * .8f;
-        var transposer = virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
-        Vector3 zoom = new Vector3(0, 20, -15);
-        //Vector3 zoom = new Vector3(0, newStats.brains * .8f, -newStats.brains * .5f);
-        transposer.m_FollowOffset = zoom;
         target.position = new Vector3(target.position.x,1.1f,target.position.z);
+        //virtualCamera.m_Lens.OrthographicSize = newStats.brains * .8f;
+        // var transposer = virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
+        // Vector3 zoom = new Vector3(0, 20, -15);
+        //Vector3 zoom = new Vector3(0, newStats.brains * .8f, -newStats.brains * .5f);
+        //transposer.m_FollowOffset = zoom;
+        
     }
 
     public void OpeningCutsceneStart(){

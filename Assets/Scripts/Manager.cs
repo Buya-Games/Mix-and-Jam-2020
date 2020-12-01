@@ -21,6 +21,7 @@ public class Manager : MonoBehaviour
     public string playerName;
     public float hitForce;
     public LayerMask enemyLM, friendlyLM, PlayerOnlyLM;
+    [HideInInspector] public int GoldBalance;
 
     // Start is called before the first frame update
     void Awake()
@@ -35,8 +36,8 @@ public class Manager : MonoBehaviour
     }
 
     void Start(){
-        SpawnPartners();
         player.GetComponent<CreatureLogic>().SetCreature(player.transform.position,false);
+        SpawnPartners();
         PartyManager.PartyMembers.Add(player);
         move.SetNewTarget(initialPlayer);
     }
@@ -44,7 +45,7 @@ public class Manager : MonoBehaviour
     public void SpawnPartners(){
         int xLoc = 0;
         for (int i = 0;i<totalCharacters;i++){
-            GameObject potential = spawner.SpawnCreature(new Vector3(xLoc,1.1f,215),"partner " + i.ToString("F0"), false,false,true);
+            GameObject potential = spawner.SpawnCreature(new Vector3(xLoc,1.1f,15),"partner " + i.ToString("F0"), false,false,true);
             potential.AddComponent<PartnerLogic>();
             potential.AddComponent<UIMouseOver>();
             PartyManager.PotentialPartners.Add(potential);
@@ -52,21 +53,9 @@ public class Manager : MonoBehaviour
         }
     }
 
-    public void SelectPartner(GameObject partner){
-        PartyManager.CleanPotentials(partner);
-        GameObject child = spawner.SpawnCreature(player.transform.position,(player.name + " " + partner.name),false,true,true);
-        child.GetComponent<CreatureLogic>().SetChild(player.GetComponent<CreatureLogic>(),partner.GetComponent<CreatureLogic>());
-        child.AddComponent<UIMouseOver>();
-        partner.GetComponent<CreatureLogic>().SetPartner();
-        PartyManager.PartyMembers.Add(partner);
-        PartyManager.PartyMembers.Add(child);
-        //partner.GetComponent<CreatureLogic>().SetCreature(partner.transform.position,false,false,true);
-        SpawnEnemies();
-    }
-
     public void SpawnEnemies(){
         for (int i = 0;i<totalEnemy;i++){
-            spawner.SpawnCreature(new Vector3(Random.Range(-100,100),1.1f,Random.Range(350,400)),"enemy " + i.ToString("F0"), true);
+            spawner.SpawnCreature(new Vector3(Random.Range(-100,100),1.1f,Random.Range(50,100)),"enemy " + i.ToString("F0"), true);
         }
         gameStarted = true;
     }

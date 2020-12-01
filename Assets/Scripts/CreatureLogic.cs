@@ -16,7 +16,8 @@ public class CreatureLogic : MonoBehaviour
     //Animator _anim;
     public Transform _playerTarget, _attackTarget;
     [SerializeField] Vector3 _patrolTarget;
-    [SerializeField] Vector3 _myOffset;
+    //[SerializeField] Vector3 _myOffset;
+    [HideInInspector] public Vector3 MyPosition;
     State _state;
     Color _origColor;
     [SerializeField] LayerMask _myLM;
@@ -27,6 +28,7 @@ public class CreatureLogic : MonoBehaviour
     Image _displayHealth, _healthBar;
     [HideInInspector] public float[] Face;
     [SerializeField] Color hairColor;
+    [SerializeField] float vel;
     
     
 
@@ -67,7 +69,7 @@ public class CreatureLogic : MonoBehaviour
             totalStats-=Strength;
             Speed = Random.Range(1f,totalStats);
             totalStats-=Speed;
-            Range = Random.Range(1f,totalStats);
+            Range = Random.Range(1f,totalStats) * 2;
             Tech = Random.Range(1f,totalStats);
             Heal = Random.Range(1f,totalStats);
         }
@@ -96,6 +98,7 @@ public class CreatureLogic : MonoBehaviour
                 gameObject.layer = 9;
             } else { //if player
                 gameObject.layer = 8;
+                _manager.ui.AddFaceToGrid(Face, this);
             }
             //SetUI();
         }
@@ -103,6 +106,7 @@ public class CreatureLogic : MonoBehaviour
         SetHealthBar();
         _alive = true;
         this.gameObject.name = MyName;
+        StartCoroutine(CheckForEnemies());
         // float mySize = Mathf.Clamp(_strength/2,0.1f,3);
         // transform.localScale = new Vector3(mySize,mySize*2,mySize);
         // myFOV.SetFOV(myStats.brains);
@@ -111,15 +115,20 @@ public class CreatureLogic : MonoBehaviour
     void SetPlayer(){ //creates a random offset away from the main player for this character
         _party = true;
         _playerTarget = _manager.player.transform;
+        _manager.ui.AddFaceToGrid(Face, this);
 
-        if (_manager.move.offsetPositions.Count > 0){
-            _myOffset = _manager.move.offsetPositions.Dequeue();
-            _manager.move.offsetPositions.Enqueue(_myOffset * 2);
-        } else {
-            float _randoDist = Random.Range(1,3f);
-            _myOffset = new Vector3(_randoDist * (Random.Range(0,2)-1),0,_randoDist * (Random.Range(0,2)-1));
-        }
+        // if (_manager.move.offsetPositions.Count > 0){
+        //     _myOffset = _manager.move.offsetPositions.Dequeue();
+        //     _manager.move.offsetPositions.Enqueue(_myOffset * 2);
+        // } else {
+            // float _randoDist = Random.Range(1,3f);
+            // _myOffset = new Vector3(_randoDist * (Random.Range(0,2)-1),0,_randoDist * (Random.Range(0,2)-1));
+        //}
         
+    }
+
+    public void SetPosition(Vector3 pos){
+        MyPosition = pos;
     }
 
     void CreateFace(){
@@ -153,7 +162,6 @@ public class CreatureLogic : MonoBehaviour
                 _alive = false;
                 Death();
             }
-            CheckForEnemies();
             Bobbing();
 
             if (_party){//if party member
@@ -166,7 +174,7 @@ public class CreatureLogic : MonoBehaviour
                         MoveToTarget(_attackTarget.position);
                     }
                 } else {
-                    MoveToTarget(_playerTarget.position + _myOffset);
+                    MoveToTarget(_playerTarget.position + MyPosition);
                 }
             } else if (_enemy){ //if enemy
                 if (_attackTarget != null){ // if you have an attack target
@@ -190,18 +198,22 @@ public class CreatureLogic : MonoBehaviour
         }
     }
 
-    void CheckForEnemies(){
-        Collider[] allHits = Physics.OverlapSphere(transform.position,Range,_myLM,QueryTriggerInteraction.Ignore);
-        if (allHits.Length > 0){
-            float closest = 1000;
-            for (int i = 0;i<allHits.Length;i++){
-                float dist = Mathf.Abs(Vector3.Distance(transform.position,allHits[i].transform.position));
-                if (dist < closest){
-                    closest = dist;
-                    _attackTarget = allHits[i].transform;
+    IEnumerator CheckForEnemies(){
+        while (_alive){
+            Collider[] allHits = Physics.OverlapSphere(transform.position,Range,_myLM,QueryTriggerInteraction.Collide);
+            if (allHits.Length > 0){
+                float closest = 1000;
+                for (int i = 0;i<allHits.Length;i++){
+                    float dist = Mathf.Abs(Vector3.Distance(transform.position,allHits[i].transform.position));
+                    if (dist < closest){
+                        closest = dist;
+                        _attackTarget = allHits[i].transform;
+                    }
                 }
             }
+            yield return new WaitForSeconds(0.25f);
         }
+        
     }
 
     void Bobbing(){
@@ -254,8 +266,8 @@ public class CreatureLogic : MonoBehaviour
                 // }
                 _manager.ui.HitGUI(_attackTarget.position, hitPoint, Color.red);
                 _manager.particles.FriendlyHit(_attackTarget.position);
+                StartCoroutine(AttackLunge());
                 StartCoroutine(HitDisplay(_attackTarget.gameObject, targetLogic._origColor));
-                HitTarget(_attackTarget.GetComponent<Rigidbody>());
             }
         }
     }
@@ -267,10 +279,32 @@ public class CreatureLogic : MonoBehaviour
         rendy.material.color = origColor;
     }
 
-    void HitTarget(Rigidbody who){
+    IEnumerator HitTarget(Rigidbody who){
         Vector3 dir = (who.transform.position - transform.position).normalized; // hit them away from me
         dir.y = 0;
-        who.velocity = (dir * _manager.hitForce); //replace this with my strength
+        float hitForce = _manager.hitForce / 15;
+        while (hitForce > 0){
+            who.velocity = (dir * _manager.hitForce); //replace this with my strength
+            hitForce -= Time.deltaTime;
+            yield return null;
+        } 
+    }
+
+    IEnumerator AttackLunge(){
+        Vector3 origPos = transform.position;
+        Vector3 attackPos = _attackTarget.position;
+
+        float attackSpeed = 3;
+        float percent = 0;
+
+        while (percent <= 1){
+            percent += Time.deltaTime * attackSpeed;
+            float interpolation = (-Mathf.Pow(percent,2) + percent) * 4;
+            transform.position = Vector3.Lerp(origPos,attackPos,interpolation);
+
+            yield return null;
+        }
+        //StartCoroutine(HitTarget(_attackTarget.GetComponent<Rigidbody>()));
     }
 
     void Death(){

@@ -7,7 +7,7 @@ using DG.Tweening;
 public class UIManager : MonoBehaviour
 {
 
-    [SerializeField] TMP_Text textAge, textSpeed, textBrains, textCharm, textGlobalSpeed, textGlobalBrains, textGlobalCharm, textGlobalPopulation, textResult;
+    [SerializeField] TMP_Text textGold;
     [SerializeField] GameObject panelTalking, btn1, btn2, btn3, btn4, face, healthBarPrefab;
     public TMP_Text textName, textTalking;
     [SerializeField] TMP_Text textPopUp;
@@ -16,8 +16,12 @@ public class UIManager : MonoBehaviour
     [HideInInspector] public Queue<GameObject> partyUIQueue = new Queue<GameObject>();
     Queue<GameObject> _healthBarsQueue = new Queue<GameObject>();
     [SerializeField] FaceDisplay _faceStats;
-
     [SerializeField] GameObject charaterStatsDisplay;
+    [SerializeField] FaceDisplay _gridFacePrefab;
+
+    [SerializeField] List<GameObject> _listGridSpots = new List<GameObject>();//I need a list cuz a Stack isn't visible in Editor
+    Stack<GameObject> _stackGridSpots = new Stack<GameObject>();
+    
     [SerializeField] TMP_Text textStatsDisplayNameAge, textStatsDisplayStrengthSpeed, textStatsDisplayTechRange, textStatsDisplayHealth;
 
     Manager manager;
@@ -34,24 +38,21 @@ public class UIManager : MonoBehaviour
         _faceStats = _faceStats.GetComponent<FaceDisplay>();
     }
 
-
-    void Update(){
-        if (manager.gameStarted){
-            UpdateMainGUI();
-            //UpdateGlobalStatsGUI();
-        }
-        
-    }
-
     public void StartSpeaking(bool start = true){
         panelTalking.SetActive(start);
+    }
 
+    public void UpdateGoldText(){
+        textGold.text = "Gold: " + manager.GoldBalance;
     }
 
     void InitializePartyUI(){
-        for (int i = 0;i<partyUIs.Length;i++){
-            partyUIQueue.Enqueue(partyUIs[i]);
-            partyUIs[i].SetActive(false);
+        // for (int i = 0;i<partyUIs.Length;i++){
+        //     partyUIQueue.Enqueue(partyUIs[i]);
+        //     partyUIs[i].SetActive(false);
+        // }
+        for (int i = 0;i<_listGridSpots.Count;i++){
+            _stackGridSpots.Push(_listGridSpots[i]);
         }
     }
 
@@ -97,6 +98,20 @@ public class UIManager : MonoBehaviour
         charaterStatsDisplay.SetActive(false);
     }
 
+    public void AddFaceToGrid(float[] face, CreatureLogic who){
+        Transform spot = _stackGridSpots.Pop().transform;
+        FaceDisplay newFace = Instantiate(_gridFacePrefab,Vector3.zero,Quaternion.identity,spot) as FaceDisplay;
+        newFace.GetComponent<DragDrop>().MyCreature = who;
+        newFace.GetComponent<RectTransform>().localPosition = new Vector3(0,-14,0);
+        newFace.DisplayFace(face);
+    }
+
+    public void RemoveFaceFromGrid(GameObject spot, FaceDisplay face){
+        Destroy(face.gameObject);
+        _stackGridSpots.Push(spot);
+    }
+
+
 
     void LoadPopUpTexts(){
         for (int i = 0;i<10;i++){
@@ -104,44 +119,6 @@ public class UIManager : MonoBehaviour
             popupTexts.Enqueue(newPopup.GetComponent<TMP_Text>());
             newPopup.SetActive(false);
         }
-    }
-
-    void UpdateMainGUI(){
-        // textAge.text = "Your Age: " + manager.playerStats.age.ToString("F0");
-        // textSpeed.text = "Your Speed: " + manager.playerStats.speed.ToString("F0") + " (" + (manager.playerStats.speed-33).ToString("+0;-#") + ")";
-        // textBrains.text = "Your Brains: " + manager.playerStats.brains.ToString("F0") + " (" + (manager.playerStats.brains-33).ToString("+0;-#") + ")";
-        // textCharm.text = "Your Charm: " + manager.playerStats.charm.ToString("F0") + " (" + (manager.playerStats.charm-33).ToString("+0;-#") + ")";
-        //textPartyStrength.text = "Party Charm: " + manager.partyStrength.ToString("F0");
-        // textPartyAge.text = "Party Age: " + manager.partyAge.ToString("F0");
-        // textPartyStrength.text = "Party Strength: " + manager.partyStrength.ToString("F0");
-    }
-
-    // void UpdateGlobalStatsGUI(){
-    //     textGlobalSpeed.text = "Global Speed: " + manager.statManager.globalSpeed.ToString("F0") + " (Max: " + manager.statManager.globalSpeedMax.ToString("F0") + ")";
-    //     textGlobalBrains.text = "Global Brains: " + manager.statManager.globalBrains.ToString("F0")  + " (Max: " + manager.statManager.globalBrainsMax.ToString("F0") + ")";
-    //     textGlobalCharm.text = "Global Charm: " + manager.statManager.globalCharm.ToString("F0")  + " (Max: " + manager.statManager.globalCharmMax.ToString("F0") + ")";
-    //     textGlobalPopulation.text = "Global Pop: " + manager.statManager.globalPopulation.ToString("F0");
-
-    // }
-
-    public void ShowResult(string text){
-        textResult.text = text;
-        StartCoroutine(ClearResult());
-    }
-
-    IEnumerator ClearResult(){
-        yield return new WaitForSeconds(1);
-        textResult.text = "";
-    }
-
-    // public void DisplayWoo(Stats wooTargetStats){
-    //     //btnWoo.onClick.AddListener(() => SelectRegion(myNumber, myAbrv, myFullname));//, newBtn.GetComponent<RectTransform>()));      
-    //     panelTalking.gameObject.SetActive(true);
-    //     textName.text = wooTargetStats.myName;
-    // }
-
-    public void CloseWoo(){
-        panelTalking.gameObject.SetActive(false);
     }
 
     public void HitGUI(Vector3 pos, float amount, Color whatColor, bool critical = false){
