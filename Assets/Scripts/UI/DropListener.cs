@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class DropListener : MonoBehaviour, IDropHandler
 {
     public Vector3 MyPosition;
+    
     public void OnDrop(PointerEventData eventData){
         if (eventData.pointerDrag != null){
             eventData.pointerDrag.transform.SetParent(transform);

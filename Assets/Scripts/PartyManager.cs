@@ -8,7 +8,7 @@ public class PartyManager : MonoBehaviour
     [HideInInspector] public List<GameObject> PotentialPartners = new List<GameObject>();
     Manager _manager;
 
-    DropListener[] _grid;
+    [SerializeField] DropListener[] _grid;
     public List<Vector3> GridSpaces = new List<Vector3>();
     Stack<Vector3> _gridStack = new Stack<Vector3>();
 
@@ -48,39 +48,55 @@ public class PartyManager : MonoBehaviour
         PotentialPartners.Clear();
     }
 
-    public void ChangePlayer(GameObject newPlayer){
-        if (newPlayer.layer == 9){
-            _manager.player = newPlayer;
+    public void ChangePlayer(CreatureLogic newPlayer){
+        if (newPlayer.gameObject.layer == 9){
+
+            Vector3 offset = newPlayer.MyPosition;
+
+            _manager.player = newPlayer.gameObject;
             _manager.move.SetNewTarget(newPlayer.transform);
             foreach (GameObject member in PartyMembers){
-                member.GetComponent<CreatureLogic>().SetPartner();
+                CreatureLogic memberLogic = member.GetComponent<CreatureLogic>();
+                memberLogic.MyPosition -= offset;
+                memberLogic.SetPartner();
                 member.layer = 9;
             }
-            newPlayer.GetComponent<CreatureLogic>()._player = true;
-            newPlayer.GetComponent<CreatureLogic>()._party = false;
-            newPlayer.layer = 8;
+            newPlayer._player = true;
+            newPlayer._party = false;
+            newPlayer.gameObject.layer = 8;
+
+            foreach (DropListener panel in _grid){
+                panel.MyPosition-=offset;
+            }
+
         } else {
             Debug.Log("invalid click: " + newPlayer.name);
         }
     }
 
+
+
     public void SelectPartner(GameObject partner){
         CleanPotentials(partner);
+        CreatureLogic partnerLogic = partner.GetComponent<CreatureLogic>();
+        AddToParty(partnerLogic);
         
         GameObject child = _manager.spawner.SpawnCreature(_manager.player.transform.position,(_manager.player.name + " " + partner.name),false,true,true);
         child.AddComponent<UIMouseOver>();
-
         CreatureLogic childLogic = child.GetComponent<CreatureLogic>();
-        CreatureLogic partnerLogic = partner.GetComponent<CreatureLogic>();
-        partnerLogic.SetPartner();
-        AssignPartyPosition(partnerLogic);
         childLogic.SetChild(_manager.player.GetComponent<CreatureLogic>(),partnerLogic);
         AssignPartyPosition(childLogic);
-
-        PartyMembers.Add(partner);
         PartyMembers.Add(child);
+        _manager.ui.AddFaceToGrid(childLogic.MyGridFace);
 
         _manager.SpawnEnemies();
+    }
+
+    public void AddToParty(CreatureLogic who){
+        who.SetPartner();
+        AssignPartyPosition(who);
+        PartyMembers.Add(who.gameObject);
+        _manager.ui.AddFaceToGrid(who.MyGridFace);
     }
     
 }

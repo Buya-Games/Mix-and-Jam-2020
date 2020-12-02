@@ -77,6 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MyName: 
+  MyType: 0
   Age: 0
   Speed: 0
   MaxHealth: 0
@@ -93,7 +94,8 @@ MonoBehaviour:
   _playerTarget: {fileID: 0}
   _attackTarget: {fileID: 0}
   _patrolTarget: {x: 0, y: 0, z: 0}
-  _myOffset: {x: 0, y: 0, z: 0}
+  MyPosition: {x: 0, y: 0, z: 0}
+  _origColor: {r: 0, g: 0, b: 0, a: 0}
   _myLM:
     serializedVersion: 2
     m_Bits: 0
@@ -101,6 +103,9 @@ MonoBehaviour:
   _myUI: {fileID: 0}
   Face: []
   hairColor: {r: 0, g: 0, b: 0, a: 0}
+  vel: 0
+  MyGridFace: {fileID: 0}
+  fireProjectile: {fileID: 7463313602672244331, guid: 2c6ac59783c13fb4295ca2f42d4ff158, type: 3}
 --- !u!1 &4013399138886477110
 GameObject:
   m_ObjectHideFlags: 0

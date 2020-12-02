@@ -8,6 +8,8 @@ public class CreatureLogic : MonoBehaviour
 {
     Manager _manager;
     public string MyName;
+    public enum CharacterType {Melee, Range, Tech};
+    public CharacterType MyType;
     public float Age, Speed, MaxHealth, Health, Strength, Range, Tech, Heal;
     public float _partyRange;//distance to player... if beyond this, must abandon attack and follow player
     float _attackRange, _chaseTimer, _chaseCounter, _attackTimer, _attackCounter, _scanArea;
@@ -19,7 +21,7 @@ public class CreatureLogic : MonoBehaviour
     //[SerializeField] Vector3 _myOffset;
     [HideInInspector] public Vector3 MyPosition;
     State _state;
-    Color _origColor;
+    public Color _origColor;
     [SerializeField] LayerMask _myLM;
     [SerializeField] Transform _visibleMesh;
     public GameObject _myUI;
@@ -29,11 +31,14 @@ public class CreatureLogic : MonoBehaviour
     [HideInInspector] public float[] Face;
     [SerializeField] Color hairColor;
     [SerializeField] float vel;
+    public FaceDisplay MyGridFace;
+    [SerializeField] FireProjectile fireProjectile;
     
     
 
     void Awake(){
         _manager = FindObjectOfType<Manager>();
+        fireProjectile = fireProjectile.GetComponent<FireProjectile>();
         //_anim = GetComponent<Animator>();
     }
 
@@ -74,6 +79,7 @@ public class CreatureLogic : MonoBehaviour
             Heal = Random.Range(1f,totalStats);
         }
         
+        MyType = CharacterType.Melee;
         MaxHealth = Strength * 3;
         Health = MaxHealth;
         Age = 20;
@@ -98,7 +104,7 @@ public class CreatureLogic : MonoBehaviour
                 gameObject.layer = 9;
             } else { //if player
                 gameObject.layer = 8;
-                _manager.ui.AddFaceToGrid(Face, this);
+                //_manager.ui.AddFaceToGrid(_myGridFace);
             }
             //SetUI();
         }
@@ -115,7 +121,7 @@ public class CreatureLogic : MonoBehaviour
     void SetPlayer(){ //creates a random offset away from the main player for this character
         _party = true;
         _playerTarget = _manager.player.transform;
-        _manager.ui.AddFaceToGrid(Face, this);
+        //_manager.ui.AddFaceToGrid(_myGridFace);
 
         // if (_manager.move.offsetPositions.Count > 0){
         //     _myOffset = _manager.move.offsetPositions.Dequeue();
@@ -133,6 +139,7 @@ public class CreatureLogic : MonoBehaviour
 
     void CreateFace(){
         Face = _manager.FaceGenerator.GenerateRandomFace();
+        MyGridFace = _manager.ui.CreateGridFace(Face,this);
         _visibleMesh.Find("Head").GetComponent<MeshRenderer>().material.color = _manager.FaceGenerator.GetHairColor(Face[6]);
         hairColor = _manager.FaceGenerator.GetHairColor(Face[6]);
     }
@@ -148,6 +155,21 @@ public class CreatureLogic : MonoBehaviour
     void SetHealthBar(){
         _myHealthBar = _manager.ui.CreateMyHealthBar(transform);
         _healthBar = _myHealthBar.Find("Fillbar").GetComponent<Image>();
+    }
+
+    public void ChangeType(){
+        Debug.Log("changing " + MyName);
+        if (MyType == CharacterType.Melee){
+            MyType = CharacterType.Range;
+            _attackRange = Range * 2;
+        } else if (MyType == CharacterType.Range){
+            MyType = CharacterType.Tech;
+            _attackRange = Range/2;
+        } else if (MyType == CharacterType.Tech){
+            MyType = CharacterType.Melee;
+            _attackRange = transform.localScale.y;
+        }
+        _manager.ui.textType.text = MyType.ToString();
     }
 
     public void NewHealth(float amount){ //updates UI for party members
@@ -252,24 +274,45 @@ public class CreatureLogic : MonoBehaviour
         _attackCounter+=Time.deltaTime;
         if (_attackCounter > _attackTimer){
             _attackCounter = 0;
-
             CreatureLogic targetLogic = _attackTarget.GetComponent<CreatureLogic>();
             if (targetLogic.Health <= 0 || _attackTarget.gameObject.activeSelf == false){ //if target ain't dead
                 _attackTarget = null; //he's dead jim!
             } else if (gameObject.activeSelf == true){//if im alive
-                float rando = Random.Range(.8f,1.2f);
-                float hitPoint = Strength * rando;
-                //if (_enemy){
-                    targetLogic.NewHealth(-hitPoint);
-                // } else {
-                //     targetLogic._health-=hitPoint;
-                // }
-                _manager.ui.HitGUI(_attackTarget.position, hitPoint, Color.red);
-                _manager.particles.FriendlyHit(_attackTarget.position);
-                StartCoroutine(AttackLunge());
-                StartCoroutine(HitDisplay(_attackTarget.gameObject, targetLogic._origColor));
+                if (MyType == CharacterType.Melee){
+                    MeleeAttack();
+                } else if (MyType == CharacterType.Range){
+                    RangeAttack();
+                } else if (MyType == CharacterType.Tech){
+                    TechAttack();
+                }
             }
         }
+    }
+
+    void MeleeAttack(){
+        CreatureLogic targetLogic = _attackTarget.GetComponent<CreatureLogic>();
+        float rando = Random.Range(.8f,1.2f);
+        float hitPoint = Strength * rando;
+        targetLogic.NewHealth(-hitPoint);
+        if (_enemy){
+            _manager.ui.HitGUI(_attackTarget.position, hitPoint, Color.red);
+            _manager.particles.FriendlyHit(_attackTarget.position);    
+        } else {
+            _manager.ui.HitGUI(_attackTarget.position, hitPoint, Color.green);
+            _manager.particles.EnemyHit(_attackTarget.position);
+        }
+        StartCoroutine(AttackLunge());
+        StartCoroutine(HitDisplay(_attackTarget.gameObject, targetLogic._origColor));
+    }
+
+    void RangeAttack(){
+        FireProjectile projectile = Instantiate(fireProjectile,Vector3.zero,Quaternion.identity) as FireProjectile;
+        projectile.Fire(transform.position, _attackTarget.position);
+    }
+
+    void TechAttack(){
+        Debug.Log("tech attack");
+
     }
 
     IEnumerator HitDisplay(GameObject who, Color origColor){

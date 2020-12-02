@@ -23,5 +23,7 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IDragHandler, IBegin
         _canvasGroup.blocksRaycasts = true;
     }
     public void OnPointerDown(PointerEventData eventData){
+        
     }
+
 }

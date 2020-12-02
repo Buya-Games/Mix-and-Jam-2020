@@ -36,10 +36,16 @@ public class Manager : MonoBehaviour
     }
 
     void Start(){
-        player.GetComponent<CreatureLogic>().SetCreature(player.transform.position,false);
+        InitializeFirstPlayer();
         SpawnPartners();
+    }
+
+    void InitializeFirstPlayer(){
+        CreatureLogic playerLogic = player.GetComponent<CreatureLogic>();
+        playerLogic.SetCreature(player.transform.position,false);
         PartyManager.PartyMembers.Add(player);
         move.SetNewTarget(initialPlayer);
+        ui.AddFaceToGrid(playerLogic.MyGridFace);
     }
 
     public void SpawnPartners(){

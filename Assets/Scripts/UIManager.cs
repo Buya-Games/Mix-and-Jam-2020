@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 
@@ -21,8 +22,11 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] List<GameObject> _listGridSpots = new List<GameObject>();//I need a list cuz a Stack isn't visible in Editor
     Stack<GameObject> _stackGridSpots = new Stack<GameObject>();
+    [SerializeField] Transform _defaultGridSpot;
     
     [SerializeField] TMP_Text textStatsDisplayNameAge, textStatsDisplayStrengthSpeed, textStatsDisplayTechRange, textStatsDisplayHealth;
+    public TMP_Text textType;
+    [SerializeField] Button btnSetPlayer, btnChangeType;
 
     Manager manager;
 
@@ -83,35 +87,56 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void DisplayStats(float[] displayFace, string name, float strength, float speed, float range, float tech, float age, float health, float maxHealth, Vector3 where){
-        textStatsDisplayNameAge.text = name + " (" + age.ToString("F0") + ")";
-        textStatsDisplayHealth.text = health.ToString("F0") + "/" + maxHealth.ToString("F0");
-        textStatsDisplayStrengthSpeed.text = "STR: " + strength.ToString("F2") + " SPEED: " + speed.ToString("F2");
-        textStatsDisplayTechRange.text = "TECH: " + tech.ToString("F2") + " RANGE: " + range.ToString("F2");
+    public void DisplayStats(CreatureLogic who, Vector3 where){
+        textStatsDisplayNameAge.text = who.MyName + " (" + who.Age.ToString("F0") + ")";
+        textStatsDisplayHealth.text = who.Health.ToString("F0") + "/" + who.MaxHealth.ToString("F0");
+        textStatsDisplayStrengthSpeed.text = "STR: " + who.Strength.ToString("F2") + " SPEED: " + who.Speed.ToString("F2");
+        textStatsDisplayTechRange.text = "TECH: " + who.Tech.ToString("F2") + " RANGE: " + who.Range.ToString("F2");
+        textType.text = who.MyType.ToString();
+        btnChangeType.onClick.RemoveAllListeners();
+        btnChangeType.onClick.AddListener(() => who.ChangeType());
+        if (who._player){
+            btnSetPlayer.interactable = false;
+        } else {
+            btnSetPlayer.onClick.AddListener(() => manager.PartyManager.ChangePlayer(who));
+            btnSetPlayer.interactable = true;
+        }
         where.y = 5;
         charaterStatsDisplay.transform.position = where;
-        _faceStats.DisplayFace(displayFace);
+        _faceStats.DisplayFace(who.Face);
         charaterStatsDisplay.SetActive(true);
     }
+
+    // public void DisplayStats(float[] displayFace, string name, float strength, float speed, float range, float tech, float age, float health, float maxHealth, Vector3 where){
+    //     textStatsDisplayNameAge.text = name + " (" + age.ToString("F0") + ")";
+    //     textStatsDisplayHealth.text = health.ToString("F0") + "/" + maxHealth.ToString("F0");
+    //     textStatsDisplayStrengthSpeed.text = "STR: " + strength.ToString("F2") + " SPEED: " + speed.ToString("F2");
+    //     textStatsDisplayTechRange.text = "TECH: " + tech.ToString("F2") + " RANGE: " + range.ToString("F2");
+    //     where.y = 5;
+    //     charaterStatsDisplay.transform.position = where;
+    //     _faceStats.DisplayFace(displayFace);
+    //     charaterStatsDisplay.SetActive(true);
+    // }
 
     public void HideStats(){
         charaterStatsDisplay.SetActive(false);
     }
 
-    public void AddFaceToGrid(float[] face, CreatureLogic who){
-        Transform spot = _stackGridSpots.Pop().transform;
-        FaceDisplay newFace = Instantiate(_gridFacePrefab,Vector3.zero,Quaternion.identity,spot) as FaceDisplay;
-        newFace.GetComponent<DragDrop>().MyCreature = who;
-        newFace.GetComponent<RectTransform>().localPosition = new Vector3(0,-14,0);
+    public FaceDisplay CreateGridFace(float[] face, CreatureLogic who){
+        FaceDisplay newFace = Instantiate(_gridFacePrefab,Vector3.zero,Quaternion.identity, _defaultGridSpot) as FaceDisplay;
         newFace.DisplayFace(face);
+        newFace.GetComponent<DragDrop>().MyCreature = who;
+        newFace.gameObject.SetActive(false);
+        return newFace;
     }
 
-    public void RemoveFaceFromGrid(GameObject spot, FaceDisplay face){
-        Destroy(face.gameObject);
-        _stackGridSpots.Push(spot);
+    public void AddFaceToGrid(FaceDisplay newFace){
+        Transform spot = _stackGridSpots.Pop().transform;
+        newFace.transform.SetParent(spot);
+        newFace.GetComponent<RectTransform>().localPosition = new Vector3(0,-14,0);
+        newFace.gameObject.SetActive(true);
+
     }
-
-
 
     void LoadPopUpTexts(){
         for (int i = 0;i<10;i++){

@@ -63,7 +63,9 @@ public class PlayerMove : MonoBehaviour
     }
 
     void FixedUpdate(){
+        rb.velocity = Vector3.zero;
         rb.MovePosition(rb.position + dir * Time.fixedDeltaTime * moveSpeed);
+        
     }
 
     void MoveMouse(){

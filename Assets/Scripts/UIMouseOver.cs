@@ -11,26 +11,24 @@ public class UIMouseOver: MonoBehaviour
         _cl = GetComponent<CreatureLogic>();
     }
 
-    void OnMouseEnter(){
-        _manager.ui.DisplayStats(
-            _cl.Face,
-            _cl.MyName,
-            _cl.Strength,
-            _cl.Speed,
-            _cl.Range,
-            _cl.Tech,
-            _cl.Age,
-            _cl.Health,
-            _cl.MaxHealth,
-            transform.position
-        );
+    void Update(){
+        if (Input.GetMouseButtonDown(1)){
+            _manager.ui.HideStats();    
+        }
     }
 
-    void OnMouseExit(){
-        _manager.ui.HideStats();
-    }
+    // void OnMouseEnter(){ //HIGHLIGHT ON
+    // }
+
+    // void OnMouseExit(){ //HIGHLIGHT OFF
+    // }
 
     void OnMouseDown(){
-        _manager.PartyManager.ChangePlayer(transform.gameObject);
+        _manager.ui.DisplayStats(_cl,transform.position);
+        
+    }
+
+    public void TakeControl(){
+        _manager.PartyManager.ChangePlayer(_cl);
     }
 }
