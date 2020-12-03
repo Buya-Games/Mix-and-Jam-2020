@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Particles : MonoBehaviour
 {
-    public ParticleSystem baby, item, enemyHit, friendlyHit;
+    public ParticleSystem baby, item, enemyHit, friendlyHit, bombHit;
     
     public void PlayBaby(Vector3 where){
         baby.transform.position = where;
@@ -24,4 +24,11 @@ public class Particles : MonoBehaviour
         friendlyHit.transform.position = where;
         friendlyHit.Play();
     }
+
+    public void BombHit(Vector3 where){
+        where.y = 0.1f;
+        bombHit.transform.position = where;
+        bombHit.Play();
+    }
+    
 }

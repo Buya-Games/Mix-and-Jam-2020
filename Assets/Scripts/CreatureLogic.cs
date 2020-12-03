@@ -39,6 +39,7 @@ public class CreatureLogic : MonoBehaviour
     void Awake(){
         _manager = FindObjectOfType<Manager>();
         fireProjectile = fireProjectile.GetComponent<FireProjectile>();
+        this.gameObject.DrawCircle(_attackRange,.05f);
         //_anim = GetComponent<Animator>();
     }
 
@@ -85,6 +86,7 @@ public class CreatureLogic : MonoBehaviour
         Age = 20;
 
         _attackRange = transform.localScale.y;
+        this.gameObject.UpdateCircle(Range,.1f);
         _chaseTimer = Range * 2;// just a random number for now
         _attackTimer = 10/Speed;// just a random number for now
         _partyRange = 15;// just a random number for now
@@ -170,6 +172,7 @@ public class CreatureLogic : MonoBehaviour
             _attackRange = transform.localScale.y;
         }
         _manager.ui.textType.text = MyType.ToString();
+        //this.gameObject.UpdateCircle(Range,.05f);
     }
 
     public void NewHealth(float amount){ //updates UI for party members
@@ -180,6 +183,7 @@ public class CreatureLogic : MonoBehaviour
 
     void Update(){
         if (_alive){
+            
             if (Health <= 0){
                 _alive = false;
                 Death();
@@ -366,6 +370,7 @@ public class CreatureLogic : MonoBehaviour
         rb.AddForce(Vector3.up * 10);
         _myHealthBar.gameObject.SetActive(false);
         gameObject.layer = 15;
+        Destroy(this.gameObject.GetComponent<LineRenderer>());
 
         //this.gameObject.SetActive(false);
     }

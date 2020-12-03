@@ -9,10 +9,12 @@ public class FireProjectile : MonoBehaviour
     [SerializeField] float angle;
     float gravity;
     [SerializeField] float height;
+    Manager _manager;
     void Initialize()
     {
         rb = GetComponent<Rigidbody>();
         gravity = Physics.gravity.y;
+        _manager = FindObjectOfType<Manager>();
     }
 
     public void Fire(Vector3 from, Vector3 target){
@@ -24,6 +26,7 @@ public class FireProjectile : MonoBehaviour
     }
 
     Vector3 CalculateTraj(Vector3 where){
+        height = (transform.position - where).sqrMagnitude/10; 
         float disY = where.y - transform.position.y;
         Vector3 disXZ = new Vector3(where.x - transform.position.x, 0, where.z - transform.position.z);
         float x = height / disXZ.magnitude;
@@ -35,7 +38,6 @@ public class FireProjectile : MonoBehaviour
 
     void OnCollisionEnter(Collision col){
         if (col.gameObject.layer == 12){
-            Manager _manager = FindObjectOfType<Manager>();
             CreatureLogic creature = col.gameObject.GetComponent<CreatureLogic>();
             float hitDamage = Random.Range(4f,6f);
             creature.NewHealth(-hitDamage);
@@ -44,6 +46,7 @@ public class FireProjectile : MonoBehaviour
             StartCoroutine(HitDisplay(col.gameObject, creature._origColor));
         } else {
             Destroy(this.gameObject);
+            _manager.particles.BombHit(transform.position);
         }
     }
 
@@ -53,5 +56,6 @@ public class FireProjectile : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         rendy.material.color = origColor;
         Destroy(this.gameObject);
+        _manager.particles.BombHit(transform.position);
     }
 }

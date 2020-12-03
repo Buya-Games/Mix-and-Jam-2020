@@ -226,4 +226,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxPower: 500
   angle: 1
-  height: 20
+  height: 5

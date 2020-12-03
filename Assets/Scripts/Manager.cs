@@ -22,6 +22,7 @@ public class Manager : MonoBehaviour
     public float hitForce;
     public LayerMask enemyLM, friendlyLM, PlayerOnlyLM;
     [HideInInspector] public int GoldBalance;
+    public Material FovMaterial;
 
     // Start is called before the first frame update
     void Awake()
